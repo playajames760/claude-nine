@@ -65,7 +65,7 @@ git clone https://github.com/playajames760/claude-nine.git .claude/commands/clau
 
 </details>
 
-## 🎮 How to Use Your New Superpowers
+## 🎮 How to Initiate Superpowers
 
 ### 🔥 Slash Commands - Your Main Interface
 Use these powerful slash commands to instantly access specialized prompts:
