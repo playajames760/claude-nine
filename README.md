@@ -23,11 +23,13 @@ Imagine having a really smart friend who knows everything about coding and can h
 ### Quick Setup
 Just copy this into your terminal - it does everything for you!
 
+First, go to your coding project folder:
 ```bash
-# Go to your coding project folder
 cd your-project
+```
 
-# Magic one-liner that sets everything up!
+Then run this magic one-liner that sets everything up:
+```bash
 curl -sSL https://raw.githubusercontent.com/playajames760/claude-nine/main/install.sh | bash
 ```
 
