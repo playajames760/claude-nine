@@ -65,74 +65,81 @@ git clone https://github.com/playajames760/claude-nine.git .claude/commands/clau
 
 </details>
 
-## 🎮 How to Initiate Superpowers
+## 🎮 How to Use Your New Superpowers
 
-### 🔥 Slash Commands - Your Main Interface
-Use these powerful slash commands to instantly access specialized prompts:
+### 🚀 Getting Started
+1. **Start Claude Code** in your project directory:
+   ```bash
+   claude
+   ```
+
+2. **Use slash commands** directly in the Claude Code interface:
+
+### 🔥 Available Slash Commands
 
 **🔧 Git Commands**
-```bash
-claude /git-assistant           # Smart commit messages and git workflow help
-claude /git:smart-commit        # Analyze changes and create clear commit messages  
-claude /git:branch-cleanup      # Clean up old branches safely
-claude /git:conflict-resolution # Help resolve merge conflicts
+```
+/git-assistant           # Smart commit messages and git workflow help
+/git:smart-commit        # Analyze changes and create clear commit messages  
+/git:branch-cleanup      # Clean up old branches safely
+/git:conflict-resolution # Help resolve merge conflicts
 ```
 
 **🧪 Testing Commands**  
-```bash
-claude /testing-helper          # Comprehensive testing assistance
-claude /test:write-comprehensive # Write thorough tests for your code
-claude /test:debug-failures     # Debug and fix failing tests
-claude /test:coverage-analysis  # Find untested code areas
+```
+/testing-helper          # Comprehensive testing assistance
+/test:write-comprehensive # Write thorough tests for your code
+/test:debug-failures     # Debug and fix failing tests
+/test:coverage-analysis  # Find untested code areas
 ```
 
 **🐛 Debugging Commands**
-```bash
-claude /debug-detective         # Advanced debugging and error analysis
-claude /debug:analyze-error     # Deep dive into specific errors
-claude /debug:performance-audit # Find and fix performance issues
-claude /debug:intermittent-bugs # Track down hard-to-reproduce bugs
+```
+/debug-detective         # Advanced debugging and error analysis
+/debug:analyze-error     # Deep dive into specific errors
+/debug:performance-audit # Find and fix performance issues
+/debug:intermittent-bugs # Track down hard-to-reproduce bugs
 ```
 
 **♻️ Refactoring Commands**
-```bash
-claude /refactor-assistant      # Code cleanup and improvement
-claude /refactor:clean-code     # Make code more readable and maintainable
-claude /refactor:extract-functions # Break down large functions
-claude /refactor:naming-conventions # Improve variable and function names
+```
+/refactor-assistant      # Code cleanup and improvement
+/refactor:clean-code     # Make code more readable and maintainable
+/refactor:extract-functions # Break down large functions
+/refactor:naming-conventions # Improve variable and function names
 ```
 
 **🚀 Deployment Commands**
-```bash
-claude /deployment-guide        # Production deployment assistance
-claude /deploy:pre-launch-check # Verify code is ready for production
-claude /deploy:step-by-step     # Guided deployment process
-claude /deploy:rollback-plan    # Safely revert problematic deployments
+```
+/deployment-guide        # Production deployment assistance
+/deploy:pre-launch-check # Verify code is ready for production
+/deploy:step-by-step     # Guided deployment process
+/deploy:rollback-plan    # Safely revert problematic deployments
 ```
 
 **💬 Codebase Commands**
-```bash
-claude /codebase-chat          # Understand and navigate large codebases
-claude /codebase:overview      # Get high-level project understanding
-claude /codebase:find-feature  # Locate specific functionality
-claude /codebase:dependencies  # Analyze project dependencies
+```
+/codebase-chat          # Understand and navigate large codebases
+/codebase:overview      # Get high-level project understanding
+/codebase:find-feature  # Locate specific functionality
+/codebase:dependencies  # Analyze project dependencies
 ```
 
 ### 🎓 Advanced Commands
-```bash
-claude /implementation-validator # Verify implementation matches requirements
-claude /accuracy-synchronizer   # Keep documentation and code in sync
-claude /integration-analyzer    # Analyze system integration points
-claude /critical-path-tracker   # Identify project priorities
-claude /blueprint-optimizer     # Optimize project documentation
+```
+/implementation-validator # Verify implementation matches requirements
+/accuracy-synchronizer   # Keep documentation and code in sync
+/integration-analyzer    # Analyze system integration points
+/critical-path-tracker   # Identify project priorities
+/blueprint-optimizer     # Optimize project documentation
 ```
 
 ### 💬 Natural Language Alternative
-You can also describe what you need in plain English:
-```bash
-claude "Look at my changes and write a clear commit message"
-claude "Help me write tests for my calculator function"
-claude "Find and fix this performance issue"
+You can also describe what you need in plain English within the Claude Code interface:
+```
+"Look at my changes and write a clear commit message"
+"Help me write tests for my calculator function"
+"Find and fix this performance issue"
 ```
 
 ### 🛠️ Keep Everything Updated
@@ -167,63 +174,63 @@ claude "Find and fix this performance issue"
 ## 🎨 Real Examples
 
 ### 📝 Git - Save Your Work Like a Pro
-```bash
+```
 # Smart saving with good messages
-claude /git:smart-commit
+/git:smart-commit
 
 # Clean up old work  
-claude /git:branch-cleanup
+/git:branch-cleanup
 
 # Fix conflicts when teammates change the same code
-claude /git:conflict-resolution
+/git:conflict-resolution
 ```
 
 ### ✅ Testing - Make Sure Your Code Works
-```bash
+```
 # Write comprehensive tests
-claude /test:write-comprehensive
+/test:write-comprehensive
 
 # Fix broken tests
-claude /test:debug-failures
+/test:debug-failures
 
 # Find missing tests
-claude /test:coverage-analysis
+/test:coverage-analysis
 ```
 
 ### 🐞 Debugging - Become a Bug Hunter
-```bash
+```
 # Analyze specific errors
-claude /debug:analyze-error
+/debug:analyze-error
 
 # Speed up slow code
-claude /debug:performance-audit
+/debug:performance-audit
 
 # Fix weird random bugs
-claude /debug:intermittent-bugs
+/debug:intermittent-bugs
 ```
 
 ### 🌐 Deployment - Share Your Project
-```bash
+```
 # Check before going live
-claude /deploy:pre-launch-check
+/deploy:pre-launch-check
 
 # Put it online safely
-claude /deploy:step-by-step
+/deploy:step-by-step
 
 # Fix production problems
-claude /deploy:rollback-plan
+/deploy:rollback-plan
 ```
 
 ### 💬 Understanding Large Codebases
-```bash
+```
 # Get project overview
-claude /codebase:overview
+/codebase:overview
 
 # Find specific features
-claude /codebase:find-feature
+/codebase:find-feature
 
 # Analyze dependencies
-claude /codebase:dependencies
+/codebase:dependencies
 ```
 
 ## 🎯 Learning Path
