@@ -34,7 +34,7 @@ curl -sSL https://raw.githubusercontent.com/playajames760/claude-nine/main/insta
 **That's it! You're ready to code! 🎉**
 
 **🤔 What just happened?**
-- ✅ Created a special folder where Claude finds your new superpowers
+- ✅ Created a special folder where Claude finds its superpowers
 - ✅ Downloaded all the helpful coding commands
 - ✅ Made backups so nothing gets lost
 - ✅ Set up easy updates for the future
