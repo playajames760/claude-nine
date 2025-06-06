@@ -180,6 +180,22 @@ These 4 commands handle 90% of everyday coding tasks. Master these first:
 /codebase:dependencies  # Analyze project dependencies
 ```
 
+**💎 Quality Commands**
+```
+/code-health-monitor     # Track code quality over time
+/technical-debt-hunter   # Find and fix technical debt
+```
+
+**🚀 Workflow Commands**
+```
+/react-assistant         # Expert React development help
+```
+
+**🔒 Security Commands**
+```
+/security-auditor        # Comprehensive security scanning
+```
+
 **🎓 Advanced Commands**
 ```
 /implementation-validator # Verify implementation matches requirements
@@ -187,6 +203,8 @@ These 4 commands handle 90% of everyday coding tasks. Master these first:
 /integration-analyzer    # Analyze system integration points
 /critical-path-tracker   # Identify project priorities
 /blueprint-optimizer     # Optimize project documentation
+/dependency-optimizer    # Manage and optimize dependencies
+/legacy-modernizer       # Modernize outdated codebases
 ```
 
 </details>
@@ -224,9 +242,17 @@ These 4 commands handle 90% of everyday coding tasks. Master these first:
 - **🔧 Git Assistant** - Never lose your work again! Smart saving, easy collaboration
 - **🧪 Testing Helper** - Make sure your code actually works before sharing it
 - **🐛 Debug Detective** - Find and fix bugs like a detective solving mysteries
-- **♻️ Refactor Assistant** - Make messy code clean and beautiful
-- **🚀 Deployment Guide** - Show your projects to the world safely
 - **💬 Codebase Chat** - Understand big, confusing codebases
+- **🔒 Security Auditor** - Keep your code safe from hackers and vulnerabilities
+
+### 💎 Quality Tools
+- **♻️ Refactor Assistant** - Make messy code clean and beautiful
+- **🏥 Code Health Monitor** - Track your code quality like a fitness tracker
+- **🏗️ Technical Debt Hunter** - Find and fix code problems before they grow
+
+### 🚀 Workflow Tools
+- **🚀 Deployment Guide** - Show your projects to the world safely
+- **⚛️ React Assistant** - Build amazing React apps with best practices
 
 ### 🎓 Advanced Tools
 - **Implementation Validator** - Double-check everything matches your plans
@@ -234,6 +260,8 @@ These 4 commands handle 90% of everyday coding tasks. Master these first:
 - **Integration Analyzer** - See how all your code pieces fit together
 - **Critical Path Tracker** - Focus on what's most important first
 - **Blueprint Optimizer** - Clean up your project notes and make them useful
+- **📦 Dependency Optimizer** - Keep your packages fresh and secure
+- **🔄 Legacy Modernizer** - Transform old code into modern masterpieces
 
 ## 🎨 Real Examples
 
@@ -297,6 +325,42 @@ These 4 commands handle 90% of everyday coding tasks. Master these first:
 /codebase:dependencies
 ```
 
+### 🔒 Security & Quality
+```
+# Security vulnerability scan
+/security:audit
+
+# Track code health metrics
+/health:check
+
+# Hunt down technical debt
+/debt:analyze
+```
+
+### ⚛️ React Development
+```
+# Create new components
+/react:component
+
+# Optimize performance
+/react:performance
+
+# Setup state management
+/react:state-management
+```
+
+### 📦 Maintenance & Modernization
+```
+# Optimize dependencies
+/deps:audit
+
+# Modernize legacy code
+/legacy:assess
+
+# Update frameworks
+/legacy:migrate
+```
+
 ## 🎯 Your Coding Journey (Step by Step)
 
 ### 🌱 Day 1: Get Started (5 minutes)
@@ -345,20 +409,32 @@ Here's what you get when you download Claude Nine:
 ```
 📦 claude-nine/
 ├── 📖 README.md                    # You're reading this right now!
-├── 🔧 git_assistant.md            # Save work & collaborate like a pro
-├── 🧪 testing_helper.md           # Make sure your code actually works  
-├── 🐛 debug_detective.md          # Hunt down bugs and squash them
-├── ♻️ refactor_assistant.md       # Clean up messy code
-├── 🚀 deployment_guide.md         # Share your projects with the world
-├── 💬 codebase_chat.md           # Understand big, scary codebases
-├── 🎓 implementation_validator.md # Double-check everything (advanced)
-├── 📚 accuracy_synchronizer.md   # Keep docs and code in sync (advanced)
-├── 🔗 integration_analyzer.md    # See how code pieces connect (advanced)
-├── 🎯 critical_path_tracker.md   # Focus on important stuff first (advanced)
-└── 🧹 blueprint_optimizer.md     # Clean up project notes (advanced)
+├── 🔧 install.sh                  # One-click installation script
+└── 📂 commands/
+    ├── 🌟 essential/              # Start here! Core tools everyone needs
+    │   ├── 🔧 git_assistant.md    # Save work & collaborate like a pro
+    │   ├── 🧪 testing_helper.md   # Make sure your code actually works
+    │   ├── 🐛 debug_detective.md  # Hunt down bugs and squash them
+    │   ├── 💬 codebase_chat.md    # Understand big, scary codebases
+    │   └── 🔒 security_auditor.md # Keep your code safe from hackers
+    ├── 💎 quality/                # Make your code better
+    │   ├── ♻️ refactor_assistant.md      # Clean up messy code
+    │   ├── 🏥 code_health_monitor.md     # Track code quality
+    │   └── 🏗️ technical_debt_hunter.md   # Find and fix problems
+    ├── 🚀 workflow/               # Streamline your development
+    │   ├── 🚀 deployment_guide.md  # Share projects with the world
+    │   └── ⚛️ react_assistant.md   # React development expert
+    └── 🎓 advanced/               # Power user features
+        ├── 📋 implementation_validator.md # Double-check everything
+        ├── 📚 accuracy_synchronizer.md    # Keep docs and code in sync
+        ├── 🔗 integration_analyzer.md     # See how code pieces connect
+        ├── 🎯 critical_path_tracker.md    # Focus on important stuff
+        ├── 🧹 blueprint_optimizer.md      # Clean up project notes
+        ├── 📦 dependency_optimizer.md     # Manage your packages
+        └── 🔄 legacy_modernizer.md        # Modernize old code
 ```
 
-**🎯 New to coding?** Start with the first 6 files - they're all you need to become awesome at programming!
+**🎯 New to coding?** Start with the essential/ folder - they're all you need to become awesome at programming!
 
 ## 💡 Tips to Become a Coding Wizard
 

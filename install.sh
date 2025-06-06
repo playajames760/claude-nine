@@ -92,6 +92,12 @@ INSTALL_ACCURACY_SYNCHRONIZER=true
 INSTALL_INTEGRATION_ANALYZER=true
 INSTALL_CRITICAL_PATH_TRACKER=true
 INSTALL_BLUEPRINT_OPTIMIZER=true
+INSTALL_CODE_HEALTH_MONITOR=true
+INSTALL_TECHNICAL_DEBT_HUNTER=true
+INSTALL_REACT_ASSISTANT=true
+INSTALL_SECURITY_AUDITOR=true
+INSTALL_DEPENDENCY_OPTIMIZER=true
+INSTALL_LEGACY_MODERNIZER=true
 
 # Custom command prefix (empty for default structure)
 COMMAND_PREFIX=""
@@ -204,6 +210,12 @@ create_command_structure() {
         ["integration_analyzer.md"]="analyze"
         ["critical_path_tracker.md"]="track"
         ["blueprint_optimizer.md"]="optimize"
+        ["code_health_monitor.md"]="health"
+        ["technical_debt_hunter.md"]="debt"
+        ["react_assistant.md"]="react"
+        ["security_auditor.md"]="security"
+        ["dependency_optimizer.md"]="deps"
+        ["legacy_modernizer.md"]="legacy"
     )
     
     # Create category directories and copy files
@@ -216,12 +228,21 @@ create_command_structure() {
             local target_dir="$base_dir/${COMMAND_PREFIX}${category}"
             mkdir -p "$target_dir"
             
-            if [[ -f "$INSTALL_DIR/$file" ]]; then
+            # Look for the file in various subdirectories
+            local source_file=""
+            for subdir in "" "commands/essential" "commands/quality" "commands/workflow" "commands/advanced" "commands/core"; do
+                if [[ -f "$INSTALL_DIR/$subdir/$file" ]]; then
+                    source_file="$INSTALL_DIR/$subdir/$file"
+                    break
+                fi
+            done
+            
+            if [[ -n "$source_file" ]]; then
                 # Create individual command files from the main file
-                create_individual_commands "$INSTALL_DIR/$file" "$target_dir"
+                create_individual_commands "$source_file" "$target_dir"
                 log_success "Set up $category commands"
             else
-                log_warning "Source file $file not found"
+                log_warning "Source file $file not found in any subdirectory"
             fi
         fi
     done
@@ -241,8 +262,7 @@ install_mcp_servers() {
     
     log_info "Installing awesome zero-config MCP servers... 🚀"
     
-    local mcp_config_file=".claude/mcp_servers.json"
-    mkdir -p "$(dirname "$mcp_config_file")"
+    local mcp_config_file=".mcp.json"
     
     # Create MCP servers configuration
     cat > "$mcp_config_file" << 'EOF'
@@ -321,14 +341,14 @@ EOF
 EOF
     
     log_success "🎉 MCP servers configuration created at $mcp_config_file"
-    log_info "💡 To use these servers, add this config to your Claude Desktop app!"
+    log_info "💡 Local MCP server configuration ready to use!"
     echo
-    echo -e "${BLUE}Next steps:${NC}"
-    echo -e "  1. Open Claude Desktop app"
-    echo -e "  2. Go to Settings > Developer"  
-    echo -e "  3. Add the config from: ${GREEN}$mcp_config_file${NC}"
-    echo -e "  4. Restart Claude Desktop"
-    echo -e "  5. Enjoy your supercharged Claude Nine! 🚀"
+    echo -e "${BLUE}MCP Server Setup:${NC}"
+    echo -e "  ✅ Configuration saved to: ${GREEN}$mcp_config_file${NC}"
+    echo -e "  ✅ Zero-config servers ready to enhance Claude's capabilities"
+    echo -e "  ✅ No API keys or additional setup required!"
+    echo
+    echo -e "${YELLOW}Note:${NC} The MCP servers will automatically activate when you use Claude Code in this project."
 }
 
 # Extract individual commands from markdown files
@@ -398,6 +418,9 @@ show_usage_examples() {
     echo -e "  ${GREEN}claude /project:git:smart-commit${NC}     # Smart git commits"
     echo -e "  ${GREEN}claude /project:test:write-tests${NC}     # Generate comprehensive tests"
     echo -e "  ${GREEN}claude /project:debug:analyze-error${NC}  # Debug analysis"
+    echo -e "  ${GREEN}claude /project:security:audit${NC}       # Security vulnerability scan"
+    echo -e "  ${GREEN}claude /project:react:component${NC}      # Create React components"
+    echo -e "  ${GREEN}claude /project:health:check${NC}         # Check code health"
     echo
     echo -e "${BLUE}🚀 MCP Superpowers (if installed):${NC}"
     echo -e "  ${YELLOW}File operations, Git magic, Database queries${NC}"
