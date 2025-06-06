@@ -67,52 +67,72 @@ git clone https://github.com/playajames760/claude-nine.git .claude/commands/clau
 
 ## 🎮 How to Use Your New Superpowers
 
-### Talk to Claude Like a Friend!
-Just ask Claude for help with normal words. Here are some examples:
+### 🔥 Slash Commands - Your Main Interface
+Use these powerful slash commands to instantly access specialized prompts:
 
-**🔧 Git Help**
+**🔧 Git Commands**
 ```bash
-claude "Help me save my changes with a good commit message"
-claude "I messed up my code, help me go back to the last working version"
-claude "My teammate and I changed the same file - help fix the conflicts!"
+claude /git-assistant           # Smart commit messages and git workflow help
+claude /git:smart-commit        # Analyze changes and create clear commit messages  
+claude /git:branch-cleanup      # Clean up old branches safely
+claude /git:conflict-resolution # Help resolve merge conflicts
 ```
 
-**🧪 Testing Help**
+**🧪 Testing Commands**  
 ```bash
-claude "Write tests for my calculator function"
-claude "My test is failing - help me figure out why"
-claude "Check if I'm testing all parts of my code"
+claude /testing-helper          # Comprehensive testing assistance
+claude /test:write-comprehensive # Write thorough tests for your code
+claude /test:debug-failures     # Debug and fix failing tests
+claude /test:coverage-analysis  # Find untested code areas
 ```
 
-**🐛 Debugging Help**
+**🐛 Debugging Commands**
 ```bash
-claude "I'm getting an error - help me understand what's wrong"
-claude "My app is running slow - help me make it faster"
-claude "Something weird happens sometimes but not always - help me find the bug"
+claude /debug-detective         # Advanced debugging and error analysis
+claude /debug:analyze-error     # Deep dive into specific errors
+claude /debug:performance-audit # Find and fix performance issues
+claude /debug:intermittent-bugs # Track down hard-to-reproduce bugs
 ```
 
-**🚀 Deployment Help**
+**♻️ Refactoring Commands**
 ```bash
-claude "Help me check if my code is ready to go live"
-claude "Guide me through putting my website online"
-claude "Something broke in production - help me roll back safely"
+claude /refactor-assistant      # Code cleanup and improvement
+claude /refactor:clean-code     # Make code more readable and maintainable
+claude /refactor:extract-functions # Break down large functions
+claude /refactor:naming-conventions # Improve variable and function names
 ```
 
-### 🔥 Pro Mode: Super Fast Commands
-Once you're comfortable, use these quick shortcuts:
-
+**🚀 Deployment Commands**
 ```bash
-# Quick git commands
-claude /project:git:smart-commit
-claude /project:git:branch-cleanup
+claude /deployment-guide        # Production deployment assistance
+claude /deploy:pre-launch-check # Verify code is ready for production
+claude /deploy:step-by-step     # Guided deployment process
+claude /deploy:rollback-plan    # Safely revert problematic deployments
+```
 
-# Quick testing commands  
-claude /project:test:write-comprehensive
-claude /project:test:debug-failures
+**💬 Codebase Commands**
+```bash
+claude /codebase-chat          # Understand and navigate large codebases
+claude /codebase:overview      # Get high-level project understanding
+claude /codebase:find-feature  # Locate specific functionality
+claude /codebase:dependencies  # Analyze project dependencies
+```
 
-# Quick debugging commands
-claude /project:debug:analyze-error
-claude /project:debug:performance-audit
+### 🎓 Advanced Commands
+```bash
+claude /implementation-validator # Verify implementation matches requirements
+claude /accuracy-synchronizer   # Keep documentation and code in sync
+claude /integration-analyzer    # Analyze system integration points
+claude /critical-path-tracker   # Identify project priorities
+claude /blueprint-optimizer     # Optimize project documentation
+```
+
+### 💬 Natural Language Alternative
+You can also describe what you need in plain English:
+```bash
+claude "Look at my changes and write a clear commit message"
+claude "Help me write tests for my calculator function"
+claude "Find and fix this performance issue"
 ```
 
 ### 🛠️ Keep Everything Updated
@@ -149,49 +169,61 @@ claude /project:debug:performance-audit
 ### 📝 Git - Save Your Work Like a Pro
 ```bash
 # Smart saving with good messages
-claude "Look at my changes and write a clear commit message that explains what I did"
+claude /git:smart-commit
 
-# Clean up old work
-claude "Show me all my old branches and help me delete the ones I don't need anymore"
+# Clean up old work  
+claude /git:branch-cleanup
 
 # Fix conflicts when teammates change the same code
-claude "My teammate and I both changed the same file - help us combine our changes"
+claude /git:conflict-resolution
 ```
 
 ### ✅ Testing - Make Sure Your Code Works
 ```bash
-# Write tests for a function
-claude "Write tests for my calculator function - test adding, subtracting, and what happens with bad input"
+# Write comprehensive tests
+claude /test:write-comprehensive
 
 # Fix broken tests
-claude "This test keeps failing and I don't know why - help me figure it out"
+claude /test:debug-failures
 
 # Find missing tests
-claude "Check what parts of my code don't have tests yet and help me write them"
+claude /test:coverage-analysis
 ```
 
 ### 🐞 Debugging - Become a Bug Hunter
 ```bash
-# Fix error messages
-claude "I'm getting this error: 'Cannot read property of undefined' - what does this mean and how do I fix it?"
+# Analyze specific errors
+claude /debug:analyze-error
 
 # Speed up slow code
-claude "My website loads really slowly - help me find out why and make it faster"
+claude /debug:performance-audit
 
 # Fix weird random bugs
-claude "Sometimes my app crashes but I can't figure out when or why - help me track down this bug"
+claude /debug:intermittent-bugs
 ```
 
 ### 🌐 Deployment - Share Your Project
 ```bash
 # Check before going live
-claude "Is my code ready to share with real users? Run through a safety checklist"
+claude /deploy:pre-launch-check
 
 # Put it online safely
-claude "Walk me through putting my website live step by step, with a backup plan if something goes wrong"
+claude /deploy:step-by-step
 
 # Fix production problems
-claude "My live website is broken! Help me quickly switch back to the working version"
+claude /deploy:rollback-plan
+```
+
+### 💬 Understanding Large Codebases
+```bash
+# Get project overview
+claude /codebase:overview
+
+# Find specific features
+claude /codebase:find-feature
+
+# Analyze dependencies
+claude /codebase:dependencies
 ```
 
 ## 🎯 Learning Path
