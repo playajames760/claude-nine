@@ -68,7 +68,7 @@ Once installed, these commands transform how you build software:
 
 ### 🏗️ **Development Commands**
 ```bash
-/claude-nine-prompt      # Start your AI development session
+/claude-nine-prompt     # Start your AI development session
 /codebase-chat          # Ask questions about your code
 /feature-architect      # Plan and build new features
 /debug-detective        # Find and fix bugs automatically
