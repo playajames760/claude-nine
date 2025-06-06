@@ -10,38 +10,77 @@ This is a collection of **proven prompts and slash commands** that help you work
 
 **No setup complexity. No learning curve. Just copy, paste, and code better.**
 
-## 🎯 Quick Start (2 minutes)
+## 🚀 Installation (30 seconds)
 
-1. **Download**: Clone or download this repository
-2. **Choose your style**: Use prompts directly OR set up slash commands (optional)
-3. **Start coding**: Pick any prompt that matches your current task
-
-### Option A: Use Prompts Directly (Easiest)
-Just copy any prompt from the files and use it in Claude Code:
+### Automatic Installation (Recommended)
+Run our smart installer that handles everything:
 
 ```bash
-# From git_assistant.md
-claude "Analyze the current changes using git diff and git status, then create a meaningful commit message following conventional commits format"
+# Navigate to your project directory
+cd your-project
 
-# From debug_detective.md  
-claude "Analyze this error and help me debug it: TypeError: Cannot read property 'length' of undefined"
+# Download and run the installer
+curl -sSL https://raw.githubusercontent.com/playajames760/claude-nine/main/install.sh | bash
 
-# From testing_helper.md
-claude "Write comprehensive tests for the getUserById function including happy path, edge cases, and error scenarios"
+# Or clone and install manually
+git clone https://github.com/playajames760/claude-nine.git
+cd claude-nine
+./install.sh
 ```
 
-### Option B: Set Up Slash Commands (Recommended)
-Create custom slash commands for even faster access:
+**What the installer does:**
+- ✅ Creates `.claude/commands/claude-nine/` structure
+- ✅ Sets up all slash commands automatically
+- ✅ Configures git integration for updates
+- ✅ Backs up existing commands (if any)
+- ✅ Provides easy update mechanism
+
+### Manual Installation (If you prefer control)
+```bash
+# In any project directory
+mkdir -p .claude/commands
+git clone https://github.com/playajames760/claude-nine.git .claude/commands/claude-nine
+
+# Use commands like: /project:claude-nine:git:smart-commit
+```
+
+### Using the Commands
+
+After installation, use slash commands in Claude Code:
 
 ```bash
-# Create command directories
-mkdir -p .claude/commands/git
-mkdir -p .claude/commands/test
-mkdir -p .claude/commands/debug
+# Git workflow commands
+claude /project:git:smart-commit          # Analyze changes and create smart commits
+claude /project:git:branch-cleanup        # Clean up merged branches
+claude /project:git:conflict-resolver     # Help with merge conflicts
 
-# Copy any prompt content to a .md file
-# Example: Save git smart-commit prompt as .claude/commands/git/smart-commit.md
-# Then use: /project:git:smart-commit
+# Testing commands  
+claude /project:test:write-comprehensive  # Write complete test suites
+claude /project:test:debug-failures       # Debug failing tests
+claude /project:test:improve-coverage     # Find and test uncovered code
+
+# Debugging commands
+claude /project:debug:analyze-error       # Systematic error analysis
+claude /project:debug:performance-audit   # Find performance bottlenecks
+claude /project:debug:race-conditions     # Identify async issues
+
+# And many more...
+```
+
+### Management Commands
+
+```bash
+# Update to latest version
+./install.sh --update
+
+# Check installation status
+./install.sh --status
+
+# Edit configuration
+./install.sh --config
+
+# Get help
+./install.sh --help
 ```
 
 ## 🛠️ What's Included
@@ -147,6 +186,12 @@ claude "Execute emergency rollback - switch traffic to previous version and veri
 
 ## ⚡ Pro Tips
 
+### Installation & Updates
+- **Auto-updates**: Set `AUTO_UPDATE=true` in config for seamless updates
+- **Custom configurations**: Edit `.claude/claude-nine.config` to customize installation
+- **Backup safety**: All updates automatically backup your existing setup
+- **Selective installation**: Choose which command categories to install
+
 ### Get Better Results
 - **Be specific**: Instead of "fix this bug", try "debug this TypeError in the user authentication flow"
 - **Provide context**: Share error messages, code snippets, or file names
@@ -161,6 +206,18 @@ claude "Execute emergency rollback - switch traffic to previous version and veri
 - **Start simple** with basic prompts, then try advanced features
 - **Share with your team** - these work great for collaborative development
 - **Adapt and modify** prompts to fit your specific needs
+
+### Maintenance
+```bash
+# Check what's installed and available
+./install.sh --status
+
+# Update to latest features and improvements
+./install.sh --update
+
+# Configure which command categories to use
+./install.sh --config
+```
 
 ## 🤝 Contributing
 
