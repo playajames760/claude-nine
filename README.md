@@ -6,7 +6,7 @@ Turn Claude Code into the ultimate coding assistant with ready-to-use commands t
 
 > 🎯 **New to coding?** Start here! These tools will help you learn faster and build better projects.
 
-## What is this? (Simple explanation!)
+## What is this?
 
 Imagine having a really smart friend who knows everything about coding and can help you with ANY programming task. That's what Claude Nine does!
 
@@ -18,9 +18,9 @@ Imagine having a really smart friend who knows everything about coding and can h
 
 **Zero setup headaches. Zero confusing jargon. Just awesome coding help!**
 
-## 🚀 Get Started (Super Easy!)
+## 🚀 Get Started
 
-### Quick Setup (Copy & Paste) 
+### Quick Setup
 Just copy this into your terminal - it does everything for you!
 
 ```bash
@@ -54,7 +54,7 @@ cd claude-nine
 ./install.sh
 ```
 
-### Option 3: Manual Setup (For the curious!)
+### Option 3: Manual Setup
 ```bash
 # Create a special folder for Claude commands
 mkdir -p .claude/commands
@@ -70,28 +70,28 @@ git clone https://github.com/playajames760/claude-nine.git .claude/commands/clau
 ### Talk to Claude Like a Friend!
 Just ask Claude for help with normal words. Here are some examples:
 
-**🔧 Git Help (Save your work like a pro!)**
+**🔧 Git Help**
 ```bash
 claude "Help me save my changes with a good commit message"
 claude "I messed up my code, help me go back to the last working version"
 claude "My teammate and I changed the same file - help fix the conflicts!"
 ```
 
-**🧪 Testing Help (Make sure your code works!)**
+**🧪 Testing Help**
 ```bash
 claude "Write tests for my calculator function"
 claude "My test is failing - help me figure out why"
 claude "Check if I'm testing all parts of my code"
 ```
 
-**🐛 Debugging Help (Fix broken code!)**
+**🐛 Debugging Help**
 ```bash
 claude "I'm getting an error - help me understand what's wrong"
 claude "My app is running slow - help me make it faster"
 claude "Something weird happens sometimes but not always - help me find the bug"
 ```
 
-**🚀 Deployment Help (Share your project with the world!)**
+**🚀 Deployment Help**
 ```bash
 claude "Help me check if my code is ready to go live"
 claude "Guide me through putting my website online"
@@ -129,7 +129,7 @@ claude /project:debug:performance-audit
 
 ## 🧰 Your New Coding Toolkit
 
-### 🌟 Essential Tools (Start Here!)
+### 🌟 Essential Tools
 - **🔧 Git Assistant** - Never lose your work again! Smart saving, easy collaboration
 - **🧪 Testing Helper** - Make sure your code actually works before sharing it
 - **🐛 Debug Detective** - Find and fix bugs like a detective solving mysteries
@@ -137,14 +137,14 @@ claude /project:debug:performance-audit
 - **🚀 Deployment Guide** - Show your projects to the world safely
 - **💬 Codebase Chat** - Understand big, confusing codebases
 
-### 🎓 Advanced Tools (For When You Level Up!)
+### 🎓 Advanced Tools
 - **Implementation Validator** - Double-check everything matches your plans
 - **Accuracy Synchronizer** - Keep your docs and code telling the same story
 - **Integration Analyzer** - See how all your code pieces fit together
 - **Critical Path Tracker** - Focus on what's most important first
 - **Blueprint Optimizer** - Clean up your project notes and make them useful
 
-## 🎨 Real Examples (Copy These!)
+## 🎨 Real Examples
 
 ### 📝 Git - Save Your Work Like a Pro
 ```bash
@@ -194,7 +194,7 @@ claude "Walk me through putting my website live step by step, with a backup plan
 claude "My live website is broken! Help me quickly switch back to the working version"
 ```
 
-## 🎯 Learning Path (Start Your Coding Journey!)
+## 🎯 Learning Path
 
 ### 🌱 Just Starting Out? Begin Here!
 1. **🔧 Git Assistant** - Learn to save your work properly (never lose code again!)
