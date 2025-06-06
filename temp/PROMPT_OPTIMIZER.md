@@ -2,7 +2,7 @@
 
 Review and optimize the following prompt according to Claude Code best practices:
 
-@commands/core/claude-nine-prompt.md
+@commands/advanced/accuracy_synchronizer.md
 
 **OPTIMIZATION REQUIREMENTS:**
 
