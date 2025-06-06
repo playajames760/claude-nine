@@ -33,13 +33,6 @@ Then download and run the interactive installer:
 curl -sSL https://raw.githubusercontent.com/playajames760/claude-nine/main/install.sh | bash
 ```
 
-**Or for more control, download first then run:**
-```bash
-curl -O https://raw.githubusercontent.com/playajames760/claude-nine/main/install.sh
-chmod +x install.sh
-./install.sh
-```
-
 **🎉 You'll see a beautiful menu with options like:**
 - **Quick Install** - Essential commands only (perfect for beginners!)
 - **Full Install** - All 50+ commands
