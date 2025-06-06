@@ -20,26 +20,38 @@ Imagine having a really smart friend who knows everything about coding and can h
 
 ## 🚀 Get Started
 
-### Quick Setup
-Just copy this into your terminal - it does everything for you!
+### ✨ Interactive Installation (Recommended)
+The new installer makes setup super easy with a friendly menu system!
 
 First, go to your coding project folder:
 ```bash
 cd your-project
 ```
 
-Then run this magic one-liner that sets everything up:
+Then download and run the interactive installer:
 ```bash
 curl -sSL https://raw.githubusercontent.com/playajames760/claude-nine/main/install.sh | bash
 ```
 
-**That's it! You're ready to code! 🎉**
+**Or for more control, download first then run:**
+```bash
+curl -O https://raw.githubusercontent.com/playajames760/claude-nine/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+**🎉 You'll see a beautiful menu with options like:**
+- **Quick Install** - Essential commands only (perfect for beginners!)
+- **Full Install** - All 50+ commands
+- **Custom Install** - Pick exactly what you want
+- **Update** - Get the latest improvements
+- **Uninstall** - Clean removal if needed
 
 **🤔 What just happened?**
-- ✅ Created a special folder where Claude finds its superpowers
-- ✅ Downloaded all the helpful coding commands
-- ✅ Made backups so nothing gets lost
-- ✅ Set up easy updates for the future
+- ✅ Interactive menu guided you through the setup
+- ✅ Only installed the commands you actually want
+- ✅ Set up powerful MCP servers for enhanced Claude abilities
+- ✅ Created easy update and management system
 
 <details>
 <summary>📋 Other Installation Options (Click to expand)</summary>
@@ -226,17 +238,28 @@ These 4 commands handle 90% of everyday coding tasks. Master these first:
 
 **Claude will understand and use the right tools automatically!**
 
-### 🛠️ Keep Everything Updated
+### 🛠️ Manage Your Installation
+
+The new installer includes powerful management features:
+
 ```bash
-# Get the latest improvements
-./install.sh --update
+# Interactive menu (recommended)
+./install.sh
 
-# Check what's installed
-./install.sh --status
-
-# Get help if stuck
-./install.sh --help
+# Quick commands for power users
+./install.sh --install     # Quick full install
+./install.sh --update      # Get the latest improvements
+./install.sh --status      # Check what's installed
+./install.sh --uninstall   # Clean removal
+./install.sh --help        # Get help if stuck
 ```
+
+**✨ Interactive Features:**
+- Real-time installation status
+- Choose exactly which command categories you want
+- Progress indicators and success messages
+- Automatic MCP server configuration
+- Easy category-based organization
 
 ## 🧰 Your New Coding Toolkit
 
@@ -458,14 +481,17 @@ Here's what you get when you download Claude Nine:
 
 ### 🛠️ Keep Everything Working Smoothly
 ```bash
+# Interactive management menu
+./install.sh
+
 # Check if everything is working
 ./install.sh --status
 
 # Get the latest cool features
 ./install.sh --update
 
-# Customize what tools you want
-./install.sh --config
+# Customize installation (choose categories)
+./install.sh  # Then select "Custom Install"
 ```
 
 ### 🎓 Learning Mindset
@@ -504,7 +530,8 @@ Found a cooler way to ask Claude for help? Have ideas for new commands? We'd lov
 **Just pick any example above and try it right now!** 
 
 ### Quick Start Checklist:
-- [ ] Run the 30-second installation
+- [ ] Run the interactive installer (`./install.sh`)
+- [ ] Choose "Quick Install" for beginners or "Full Install" for everything
 - [ ] Try asking Claude: *"Help me save my changes with a good commit message"*
 - [ ] Bookmark this page for easy reference
 - [ ] Share with a friend who's learning to code!

@@ -1,621 +1,539 @@
 #!/bin/bash
 
-# Claude Nine - Advanced Installation Script
-# Installs Claude Nine slash commands with git integration and update capabilities
+# Claude Nine - Interactive Installation Script
+# Simple, intuitive installer with interactive menus
 
-set -e  # Exit on any error
+set -e
 
 # Configuration
-REPO_URL="https://github.com/playajames760/claude-nine.git"  # Update this with actual repo URL
-INSTALL_DIR=".claude/commands/claude-nine"
-CONFIG_FILE=".claude/claude-nine.config"
-VERSION_FILE=".claude/claude-nine.version"
+REPO_URL="https://github.com/playajames760/claude-nine.git"
+INSTALL_DIR="$HOME/.claude/commands/claude-nine"
+VERSION_FILE="$HOME/.claude/claude-nine.version"
 
-# Colors for output
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+PURPLE='\033[0;35m'
+BOLD='\033[1m'
+NC='\033[0m'
 
 # Logging functions
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+log_info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+log_warning() { echo -e "${YELLOW}⚠️  $1${NC}"; }
+log_error() { echo -e "${RED}❌ $1${NC}"; }
+log_step() { echo -e "${PURPLE}🔧 $1${NC}"; }
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Check if command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
+# Utility functions
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+press_enter() { echo -e "\n${CYAN}Press Enter to continue...${NC}"; read -r; }
 
 # Check prerequisites
 check_prerequisites() {
-    log_info "Checking prerequisites..."
+    local missing=()
     
-    if ! command_exists git; then
-        log_error "Git is required but not installed. Please install git first."
+    if ! command_exists git; then missing+=("git"); fi
+    if ! command_exists claude; then log_warning "Claude Code CLI not detected"; fi
+    
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing required tools: ${missing[*]}"
+        echo "Please install them first and try again."
         exit 1
     fi
     
-    if ! command_exists claude; then
-        log_warning "Claude Code CLI not detected. Make sure it's installed and in PATH."
-    fi
-    
-    if ! command_exists npm; then
-        log_warning "npm not detected. MCP servers will be skipped."
-        INSTALL_MCP_SERVERS=false
-    fi
-    
-    log_success "Prerequisites check completed"
+    log_success "All prerequisites met"
 }
 
-# Create project backup
-create_project_backup() {
-    echo
-    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${CYAN}                          PROJECT BACKUP RECOMMENDATION                          ${NC}"
-    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo
-    echo -e "${YELLOW}⚠️  IMPORTANT: Creating a backup of your project is highly recommended!${NC}"
-    echo
-    echo -e "This will help you restore your project if anything unexpected happens during"
-    echo -e "the installation process. The backup will be created in your project root."
-    echo
-    echo -e -n "${BLUE}Would you like to create a backup of your project? [Y/n]:${NC} "
-    read -r response
-    
-    # Default to yes if user just presses enter
-    response=${response:-Y}
-    
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-        local project_name=$(basename "$(pwd)")
-        local backup_filename="claude-nine-backup-${project_name}-$(date +%Y%m%d-%H%M%S).tar.gz"
-        local backup_path="../$backup_filename"
-        
-        log_info "Creating project backup..."
-        echo -e "${BLUE}Backup will be saved as:${NC} ${GREEN}$backup_path${NC}"
-        echo
-        
-        # Exclude common directories that shouldn't be backed up
-        tar --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='dist' \
-            --exclude='build' \
-            --exclude='.next' \
-            --exclude='coverage' \
-            --exclude='.cache' \
-            --exclude='*.log' \
-            --exclude='tmp' \
-            --exclude='temp' \
-            -czf "$backup_path" . 2>/dev/null
-        
-        if [[ $? -eq 0 ]]; then
-            local backup_size=$(du -h "$backup_path" | cut -f1)
-            log_success "Backup created successfully! (Size: $backup_size)"
-            echo
-            echo -e "${GREEN}✅ Backup saved to:${NC} $(realpath "$backup_path")"
-            echo
-            echo -e "${YELLOW}📌 IMPORTANT:${NC} Please move this backup file to a safe location outside"
-            echo -e "   your project directory. Suggested locations:"
-            echo -e "   • ${CYAN}~/backups/${NC}"
-            echo -e "   • ${CYAN}/backup/projects/${NC}"
-            echo -e "   • ${CYAN}External drive or cloud storage${NC}"
-            echo
-            echo -e "${BLUE}To restore from backup later, use:${NC}"
-            echo -e "   ${GREEN}tar -xzf $backup_filename${NC}"
-            echo
-        else
-            log_error "Failed to create backup. Would you like to continue anyway? [y/N]"
-            read -r continue_response
-            if [[ ! "$continue_response" =~ ^[Yy]$ ]]; then
-                log_info "Installation cancelled."
-                exit 1
-            fi
-        fi
-    else
-        log_warning "Skipping backup creation. Proceeding with installation..."
-        echo
-    fi
-    
-    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+# Show banner
+show_banner() {
+    clear
+    echo -e "${BOLD}${BLUE}"
+    echo "╔══════════════════════════════════════════════════════════════╗"
+    echo "║                      🤖 Claude Nine                         ║"
+    echo "║              Advanced AI Development Assistant               ║"
+    echo "║                                                              ║"
+    echo "║  Transform your development workflow with 50+ AI commands    ║"
+    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo -e "${NC}"
     echo
 }
 
-# Create default configuration
-create_default_config() {
-    cat > "$CONFIG_FILE" << EOF
-# Claude Nine Configuration
-# Edit this file to customize your installation
-
-# Installation settings
-AUTO_UPDATE=true
-BACKUP_ON_UPDATE=true
-PRESERVE_CUSTOM_COMMANDS=true
-
-# MCP Server Installation (zero-config, no API keys needed!)
-INSTALL_MCP_SERVERS=true
-INSTALL_FILESYSTEM_MCP=true
-INSTALL_GIT_MCP=true
-INSTALL_SQLITE_MCP=true
-INSTALL_DUCKDUCKGO_MCP=true
-INSTALL_MATH_MCP=true
-
-# Command categories to install (set to false to skip)
-INSTALL_GIT_ASSISTANT=true
-INSTALL_TESTING_HELPER=true
-INSTALL_DEBUG_DETECTIVE=true
-INSTALL_REFACTOR_ASSISTANT=true
-INSTALL_DEPLOYMENT_GUIDE=true
-INSTALL_CODEBASE_CHAT=true
-INSTALL_IMPLEMENTATION_VALIDATOR=true
-INSTALL_ACCURACY_SYNCHRONIZER=true
-INSTALL_INTEGRATION_ANALYZER=true
-INSTALL_CRITICAL_PATH_TRACKER=true
-INSTALL_BLUEPRINT_OPTIMIZER=true
-INSTALL_CODE_HEALTH_MONITOR=true
-INSTALL_TECHNICAL_DEBT_HUNTER=true
-INSTALL_REACT_ASSISTANT=true
-INSTALL_SECURITY_AUDITOR=true
-INSTALL_DEPENDENCY_OPTIMIZER=true
-INSTALL_LEGACY_MODERNIZER=true
-
-# Custom command prefix (empty for default structure)
-COMMAND_PREFIX=""
-
-# Branch to track (main, develop, etc.)
-TRACK_BRANCH="main"
-EOF
-}
-
-# Load configuration
-load_config() {
-    if [[ -f "$CONFIG_FILE" ]]; then
-        source "$CONFIG_FILE"
-        log_info "Loaded configuration from $CONFIG_FILE"
-    else
-        log_info "Creating default configuration..."
-        create_default_config
-        source "$CONFIG_FILE"
-        log_success "Created default configuration at $CONFIG_FILE"
+# Show main menu
+show_main_menu() {
+    local status="$(get_installation_status)"
+    
+    echo -e "${BOLD}What would you like to do?${NC}"
+    echo
+    echo -e "  ${GREEN}1)${NC} Install Claude Nine commands"
+    if [[ "$status" == "installed" ]]; then
+        echo -e "  ${BLUE}2)${NC} Update to latest version"
+        echo -e "  ${RED}3)${NC} Uninstall Claude Nine"
+        echo -e "  ${CYAN}4)${NC} Show installation status"
     fi
+    echo -e "  ${YELLOW}0)${NC} Exit"
+    echo
+    echo -n "Enter your choice: "
 }
 
-# Get current version
-get_current_version() {
-    if [[ -f "$VERSION_FILE" ]]; then
-        cat "$VERSION_FILE"
+# Get installation status
+get_installation_status() {
+    if [[ -d "$INSTALL_DIR" && -f "$VERSION_FILE" ]]; then
+        echo "installed"
     else
         echo "not-installed"
     fi
 }
 
-# Get remote version
-get_remote_version() {
-    if [[ -d "$INSTALL_DIR" ]]; then
-        cd "$INSTALL_DIR"
-        git fetch origin "$TRACK_BRANCH" 2>/dev/null || true
-        git rev-parse "origin/$TRACK_BRANCH" 2>/dev/null || echo "unknown"
-        cd - >/dev/null
+# Show installation options
+show_install_options() {
+    echo -e "${BOLD}Choose installation type:${NC}"
+    echo
+    echo -e "  ${GREEN}1)${NC} Quick Install (Essential commands only)"
+    echo -e "  ${BLUE}2)${NC} Full Install (All 50+ commands)"
+    echo -e "  ${PURPLE}3)${NC} Custom Install (Choose categories)"
+    echo -e "  ${YELLOW}0)${NC} Back to main menu"
+    echo
+    echo -n "Enter your choice: "
+}
+
+# Show command categories for custom install
+show_categories() {
+    echo -e "${BOLD}Select command categories to install:${NC}"
+    echo
+    echo -e "  ${GREEN}1)${NC} Git Assistant (Smart commits, branch management)"
+    echo -e "  ${GREEN}2)${NC} Testing Helper (Test generation, coverage analysis)"
+    echo -e "  ${GREEN}3)${NC} Debug Detective (Error analysis, performance debugging)"
+    echo -e "  ${GREEN}4)${NC} Refactor Assistant (Code improvement, modernization)"
+    echo -e "  ${GREEN}5)${NC} Security Auditor (Vulnerability scanning, security fixes)"
+    echo -e "  ${GREEN}6)${NC} React Assistant (Component generation, optimization)"
+    echo -e "  ${GREEN}7)${NC} Code Health Monitor (Quality metrics, technical debt)"
+    echo -e "  ${GREEN}8)${NC} Deployment Guide (CI/CD, containerization)"
+    echo -e "  ${GREEN}9)${NC} Advanced Tools (Integration analysis, blueprint optimization)"
+    echo -e "  ${BLUE}A)${NC} Select All"
+    echo -e "  ${YELLOW}0)${NC} Back"
+    echo
+    echo "Enter categories (comma-separated, e.g., 1,2,3): "
+}
+
+# Install essential commands
+install_essential() {
+    log_step "Installing essential commands..."
+    
+    local commands=(
+        "git_assistant.md:git"
+        "testing_helper.md:test"
+        "debug_detective.md:debug"
+        "codebase_chat.md:chat"
+    )
+    
+    for cmd in "${commands[@]}"; do
+        local file="${cmd%:*}"
+        local category="${cmd#*:}"
+        install_command_category "$file" "$category"
+    done
+    
+    log_success "Essential commands installed"
+}
+
+# Install all commands
+install_full() {
+    log_step "Installing all commands..."
+    
+    local commands=(
+        "git_assistant.md:git"
+        "testing_helper.md:test"
+        "debug_detective.md:debug"
+        "refactor_assistant.md:refactor"
+        "deployment_guide.md:deploy"
+        "codebase_chat.md:chat"
+        "implementation_validator.md:validate"
+        "accuracy_synchronizer.md:sync"
+        "integration_analyzer.md:analyze"
+        "critical_path_tracker.md:track"
+        "blueprint_optimizer.md:optimize"
+        "code_health_monitor.md:health"
+        "technical_debt_hunter.md:debt"
+        "react_assistant.md:react"
+        "security_auditor.md:security"
+        "dependency_optimizer.md:deps"
+        "legacy_modernizer.md:legacy"
+    )
+    
+    for cmd in "${commands[@]}"; do
+        local file="${cmd%:*}"
+        local category="${cmd#*:}"
+        install_command_category "$file" "$category"
+    done
+    
+    log_success "All commands installed"
+}
+
+# Install custom selection
+install_custom() {
+    local selection="$1"
+    log_step "Installing selected categories..."
+    
+    declare -A category_map=(
+        ["1"]="git_assistant.md:git"
+        ["2"]="testing_helper.md:test"
+        ["3"]="debug_detective.md:debug"
+        ["4"]="refactor_assistant.md:refactor"
+        ["5"]="security_auditor.md:security"
+        ["6"]="react_assistant.md:react"
+        ["7"]="code_health_monitor.md:health"
+        ["8"]="deployment_guide.md:deploy"
+        ["9"]="integration_analyzer.md:analyze,critical_path_tracker.md:track,blueprint_optimizer.md:optimize"
+    )
+    
+    IFS=',' read -ra selected <<< "$selection"
+    for item in "${selected[@]}"; do
+        item=$(echo "$item" | tr -d ' ')
+        if [[ -n "${category_map[$item]}" ]]; then
+            local commands="${category_map[$item]}"
+            IFS=',' read -ra cmd_list <<< "$commands"
+            for cmd in "${cmd_list[@]}"; do
+                local file="${cmd%:*}"
+                local category="${cmd#*:}"
+                install_command_category "$file" "$category"
+            done
+        fi
+    done
+    
+    log_success "Selected categories installed"
+}
+
+# Install a specific command category
+install_command_category() {
+    local file="$1"
+    local category="$2"
+    local source_file=""
+    
+    # Find the source file
+    for subdir in "" "commands/essential" "commands/quality" "commands/workflow" "commands/advanced" "commands/core"; do
+        local check_path="$INSTALL_DIR/$subdir/$file"
+        if [[ -f "$check_path" ]]; then
+            source_file="$check_path"
+            break
+        fi
+    done
+    
+    # Also check root directory for standalone files
+    if [[ -z "$source_file" && -f "$INSTALL_DIR/$file" ]]; then
+        source_file="$INSTALL_DIR/$file"
+    fi
+    
+    if [[ -n "$source_file" ]]; then
+        local target_dir="$HOME/.claude/commands/$category"
+        mkdir -p "$target_dir"
+        
+        # Create command file
+        local target_file="$target_dir/$(basename "$file")"
+        cp "$source_file" "$target_file"
+        
+        echo -e "  ${GREEN}✓${NC} $category commands"
     else
-        echo "not-cloned"
+        echo -e "  ${RED}✗${NC} $file not found"
     fi
 }
 
-# Save version info
-save_version() {
-    local version="$1"
-    echo "$version" > "$VERSION_FILE"
-    echo "$(date)" >> "$VERSION_FILE"
-}
-
-# Backup existing installation
-backup_installation() {
-    if [[ -d "$INSTALL_DIR" && "$BACKUP_ON_UPDATE" == "true" ]]; then
-        local backup_dir="${INSTALL_DIR}.backup.$(date +%Y%m%d_%H%M%S)"
-        log_info "Creating backup at $backup_dir"
-        cp -r "$INSTALL_DIR" "$backup_dir"
-        log_success "Backup created successfully"
-    fi
-}
-
-# Install or clone repository
-install_repo() {
+# Clone or update repository
+setup_repository() {
+    log_step "Setting up Claude Nine repository..."
+    
+    mkdir -p "$(dirname "$INSTALL_DIR")"
+    
     if [[ -d "$INSTALL_DIR" ]]; then
         log_info "Updating existing installation..."
         cd "$INSTALL_DIR"
-        
-        # Stash any local changes if preserving custom commands
-        if [[ "$PRESERVE_CUSTOM_COMMANDS" == "true" ]]; then
-            git stash push -m "Auto-stash before update $(date)" 2>/dev/null || true
-        fi
-        
-        git fetch origin "$TRACK_BRANCH"
-        git reset --hard "origin/$TRACK_BRANCH"
-        
-        # Restore custom commands if they were stashed
-        if [[ "$PRESERVE_CUSTOM_COMMANDS" == "true" ]]; then
-            git stash pop 2>/dev/null || log_info "No custom changes to restore"
-        fi
-        
+        git pull origin main
         cd - >/dev/null
-        log_success "Updated to latest version"
     else
-        log_info "Installing Claude Nine for the first time..."
-        mkdir -p "$(dirname "$INSTALL_DIR")"
+        log_info "Cloning repository..."
         git clone "$REPO_URL" "$INSTALL_DIR"
-        cd "$INSTALL_DIR"
-        git checkout "$TRACK_BRANCH"
-        cd - >/dev/null
-        log_success "Initial installation completed"
-    fi
-}
-
-# Create command structure
-create_command_structure() {
-    log_info "Setting up command structure..."
-    
-    local base_dir=".claude/commands"
-    mkdir -p "$base_dir"
-    
-    # Map of files to command categories
-    declare -A command_map=(
-        ["git_assistant.md"]="git"
-        ["testing_helper.md"]="test"
-        ["debug_detective.md"]="debug"
-        ["refactor_assistant.md"]="refactor"
-        ["deployment_guide.md"]="deploy"
-        ["codebase_chat.md"]="chat"
-        ["implementation_validator.md"]="validate"
-        ["accuracy_synchronizer.md"]="sync"
-        ["integration_analyzer.md"]="analyze"
-        ["critical_path_tracker.md"]="track"
-        ["blueprint_optimizer.md"]="optimize"
-        ["code_health_monitor.md"]="health"
-        ["technical_debt_hunter.md"]="debt"
-        ["react_assistant.md"]="react"
-        ["security_auditor.md"]="security"
-        ["dependency_optimizer.md"]="deps"
-        ["legacy_modernizer.md"]="legacy"
-    )
-    
-    # Create category directories and copy files
-    for file in "${!command_map[@]}"; do
-        local category="${command_map[$file]}"
-        local var_name="INSTALL_$(echo "${file%%.md}" | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
-        
-        # Check if this category should be installed
-        if [[ "${!var_name}" == "true" ]]; then
-            local target_dir="$base_dir/${COMMAND_PREFIX}${category}"
-            mkdir -p "$target_dir"
-            
-            # Look for the file in various subdirectories
-            local source_file=""
-            for subdir in "" "commands/essential" "commands/quality" "commands/workflow" "commands/advanced" "commands/core"; do
-                if [[ -f "$INSTALL_DIR/$subdir/$file" ]]; then
-                    source_file="$INSTALL_DIR/$subdir/$file"
-                    break
-                fi
-            done
-            
-            if [[ -n "$source_file" ]]; then
-                # Create individual command files from the main file
-                create_individual_commands "$source_file" "$target_dir"
-                log_success "Set up $category commands"
-            else
-                log_warning "Source file $file not found in any subdirectory"
-            fi
-        fi
-    done
-}
-
-# Install MCP Servers
-install_mcp_servers() {
-    if [[ "$INSTALL_MCP_SERVERS" != "true" ]]; then
-        log_info "MCP server installation disabled"
-        return 0
     fi
     
+    log_success "Repository ready"
+}
+
+# Main installation process
+do_install() {
+    local install_type="$1"
+    local selection="$2"
+    
+    echo
+    log_step "Starting installation..."
+    
+    check_prerequisites
+    setup_repository
+    
+    case "$install_type" in
+        "essential") install_essential ;;
+        "full") install_full ;;
+        "custom") install_custom "$selection" ;;
+    esac
+    
+    # Save version info
+    cd "$INSTALL_DIR"
+    git rev-parse HEAD > "$VERSION_FILE"
+    date >> "$VERSION_FILE"
+    cd - >/dev/null
+    
+    setup_mcp_servers
+    show_success_message
+}
+
+# Setup MCP servers
+setup_mcp_servers() {
     if ! command_exists npm; then
-        log_warning "npm not available - skipping MCP server installation"
+        log_warning "npm not available - skipping MCP setup"
         return 0
     fi
     
-    log_info "Installing awesome zero-config MCP servers... 🚀"
+    echo
+    log_step "Setting up MCP servers..."
     
-    local mcp_config_file=".mcp.json"
-    
-    # Check if .mcp.json already exists
-    if [[ -f "$mcp_config_file" ]]; then
-        log_warning ".mcp.json already exists. Creating backup..."
-        cp "$mcp_config_file" "${mcp_config_file}.backup.$(date +%Y%m%d_%H%M%S)"
-        log_info "Existing configuration backed up"
-    fi
-    
-    # Create MCP servers configuration
-    cat > "$mcp_config_file" << 'EOF'
+    cat > ".mcp.json" << 'EOF'
 {
   "mcpServers": {
-EOF
-    
-    local first_server=true
-    
-    # Filesystem MCP Server
-    if [[ "$INSTALL_FILESYSTEM_MCP" == "true" ]]; then
-        log_info "📁 Installing Filesystem MCP Server..."
-        if [[ "$first_server" != "true" ]]; then
-            echo "," >> "$mcp_config_file"
-        fi
-        cat >> "$mcp_config_file" << 'EOF'
     "filesystem": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "."
-      ]
-    }
-EOF
-        first_server=false
-        log_success "📁 Filesystem MCP Server ready!"
-    fi
-    
-    # Git MCP Server
-    if [[ "$INSTALL_GIT_MCP" == "true" ]]; then
-        log_info "🔧 Installing Git MCP Server..."
-        if [[ "$first_server" != "true" ]]; then
-            echo "," >> "$mcp_config_file"
-        fi
-        cat >> "$mcp_config_file" << 'EOF'
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    },
     "git": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-git",
-        "--repository",
-        "."
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "."]
     }
-EOF
-        first_server=false
-        log_success "🔧 Git MCP Server ready!"
-    fi
-    
-    # SQLite MCP Server
-    if [[ "$INSTALL_SQLITE_MCP" == "true" ]]; then
-        log_info "🗃️ Installing SQLite MCP Server..."
-        if [[ "$first_server" != "true" ]]; then
-            echo "," >> "$mcp_config_file"
-        fi
-        cat >> "$mcp_config_file" << 'EOF'
-    "sqlite": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sqlite",
-        "--db-path",
-        "./database.db"
-      ]
-    }
-EOF
-        first_server=false
-        log_success "🗃️ SQLite MCP Server ready!"
-    fi
-    
-    # Close the JSON configuration
-    cat >> "$mcp_config_file" << 'EOF'
   }
 }
 EOF
     
-    log_success "🎉 MCP servers configuration created at $mcp_config_file"
-    log_info "💡 Local MCP server configuration ready to use!"
-    echo
-    echo -e "${BLUE}MCP Server Setup:${NC}"
-    echo -e "  ✅ Configuration saved to: ${GREEN}$mcp_config_file${NC}"
-    echo -e "  ✅ Zero-config servers ready to enhance Claude's capabilities"
-    echo -e "  ✅ No API keys or additional setup required!"
-    echo
-    echo -e "${YELLOW}Note:${NC} The MCP servers will automatically activate when you use Claude Code in this project."
+    log_success "MCP servers configured"
 }
 
-# Extract individual commands from markdown files
-create_individual_commands() {
-    local source_file="$1"
-    local target_dir="$2"
-    
-    # Read the source file and extract prompts
-    # This is a simplified version - you might want to enhance this based on your markdown structure
-    local current_command=""
-    local current_content=""
-    local in_code_block=false
-    
-    while IFS= read -r line; do
-        if [[ "$line" =~ ^##[[:space:]](.+)$ ]]; then
-            # Save previous command if exists
-            if [[ -n "$current_command" && -n "$current_content" ]]; then
-                local filename=$(echo "$current_command" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
-                echo "$current_content" > "$target_dir/$filename.md"
-            fi
-            
-            # Start new command
-            current_command="${BASH_REMATCH[1]}"
-            current_content="$line"$'\n'
-        elif [[ -n "$current_command" ]]; then
-            current_content+="$line"$'\n'
-        fi
-    done < "$source_file"
-    
-    # Save the last command
-    if [[ -n "$current_command" && -n "$current_content" ]]; then
-        local filename=$(echo "$current_command" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
-        echo "$current_content" > "$target_dir/$filename.md"
-    fi
-}
-
-# Show usage examples
-show_usage_examples() {
-    log_success "Installation completed! Here's how to use your new slash commands:"
+# Show success message
+show_success_message() {
     echo
-    echo -e "${BLUE}Available command categories:${NC}"
+    echo -e "${GREEN}${BOLD}🎉 Installation Complete!${NC}"
+    echo
+    echo -e "${BOLD}Your new slash commands:${NC}"
     
-    local base_dir=".claude/commands"
+    local base_dir="$HOME/.claude/commands"
     for dir in "$base_dir"/*; do
         if [[ -d "$dir" ]]; then
             local category=$(basename "$dir")
-            echo -e "  ${GREEN}/$category${NC}"
-            
-            # Show a few example commands
-            local count=0
-            for cmd in "$dir"/*.md; do
-                if [[ -f "$cmd" && $count -lt 3 ]]; then
-                    local cmdname=$(basename "$cmd" .md)
-                    echo -e "    ${YELLOW}/project:$category:$cmdname${NC}"
-                    ((count++))
-                fi
-            done
-            
-            if [[ $count -eq 3 ]]; then
-                echo -e "    ${YELLOW}... and more${NC}"
-            fi
-            echo
+            echo -e "  ${GREEN}/$category${NC} - $(get_category_description "$category")"
         fi
     done
     
-    echo -e "${BLUE}Examples:${NC}"
-    echo -e "  ${GREEN}claude /project:git:smart-commit${NC}     # Smart git commits"
-    echo -e "  ${GREEN}claude /project:test:write-tests${NC}     # Generate comprehensive tests"
-    echo -e "  ${GREEN}claude /project:debug:analyze-error${NC}  # Debug analysis"
-    echo -e "  ${GREEN}claude /project:security:audit${NC}       # Security vulnerability scan"
-    echo -e "  ${GREEN}claude /project:react:component${NC}      # Create React components"
-    echo -e "  ${GREEN}claude /project:health:check${NC}         # Check code health"
     echo
-    echo -e "${BLUE}🚀 MCP Superpowers (if installed):${NC}"
-    echo -e "  ${YELLOW}File operations, Git magic, Database queries${NC}"
-    echo -e "  ${YELLOW}Just ask Claude naturally - the tools work automatically!${NC}"
+    echo -e "${BOLD}Quick examples:${NC}"
+    echo -e "  ${CYAN}claude /$category:smart-commit${NC}    # Intelligent git commits"
+    echo -e "  ${CYAN}claude /$category:generate-tests${NC}  # Auto-generate tests"
+    echo -e "  ${CYAN}claude /$category:debug-analysis${NC}  # Analyze errors"
     echo
-    echo -e "${BLUE}Management commands:${NC}"
-    echo -e "  ${GREEN}./install.sh --update${NC}               # Update to latest version"
-    echo -e "  ${GREEN}./install.sh --config${NC}               # Edit configuration"
-    echo -e "  ${GREEN}./install.sh --status${NC}               # Show installation status"
+    echo -e "${YELLOW}💡 Tip: Use 'claude --help' to see all available commands${NC}"
+    
+    press_enter
+}
+
+# Get category description
+get_category_description() {
+    case "$1" in
+        "git") echo "Smart git operations" ;;
+        "test") echo "Testing and QA tools" ;;
+        "debug") echo "Error analysis and debugging" ;;
+        "refactor") echo "Code improvement tools" ;;
+        "security") echo "Security scanning and fixes" ;;
+        "react") echo "React development assistant" ;;
+        "health") echo "Code quality monitoring" ;;
+        "deploy") echo "Deployment and CI/CD" ;;
+        *) echo "Development tools" ;;
+    esac
+}
+
+# Update installation
+do_update() {
+    echo
+    log_step "Updating Claude Nine..."
+    
+    if [[ ! -d "$INSTALL_DIR" ]]; then
+        log_error "Claude Nine is not installed"
+        return 1
+    fi
+    
+    cd "$INSTALL_DIR"
+    local old_version=$(git rev-parse HEAD)
+    git pull origin main
+    local new_version=$(git rev-parse HEAD)
+    cd - >/dev/null
+    
+    if [[ "$old_version" == "$new_version" ]]; then
+        log_info "Already up to date"
+    else
+        echo "$new_version" > "$VERSION_FILE"
+        date >> "$VERSION_FILE"
+        log_success "Updated to latest version"
+    fi
+    
+    press_enter
+}
+
+# Uninstall
+do_uninstall() {
+    echo
+    echo -e "${RED}${BOLD}⚠️  Uninstall Claude Nine${NC}"
+    echo
+    echo "This will remove:"
+    echo "• All slash commands"
+    echo "• Installation directory"
+    echo "• Configuration files"
+    echo
+    echo -n "Are you sure? (yes/no): "
+    read -r confirm
+    
+    if [[ "$confirm" == "yes" ]]; then
+        log_step "Removing Claude Nine..."
+        
+        rm -rf "$INSTALL_DIR"
+        rm -f "$VERSION_FILE"
+        rm -rf "$HOME/.claude/commands"
+        rm -f ".mcp.json"
+        
+        log_success "Claude Nine has been uninstalled"
+    else
+        log_info "Uninstall cancelled"
+    fi
+    
+    press_enter
 }
 
 # Show status
 show_status() {
-    log_info "Claude Nine Installation Status"
     echo
-    
-    local current_version=$(get_current_version)
-    local remote_version=$(get_remote_version)
-    
-    echo -e "${BLUE}Current Version:${NC} $current_version"
-    echo -e "${BLUE}Remote Version:${NC} $remote_version"
-    echo -e "${BLUE}Installation Directory:${NC} $INSTALL_DIR"
-    echo -e "${BLUE}Configuration File:${NC} $CONFIG_FILE"
+    echo -e "${BOLD}Installation Status${NC}"
     echo
     
     if [[ -d "$INSTALL_DIR" ]]; then
-        echo -e "${GREEN}✓${NC} Installation directory exists"
-    else
-        echo -e "${RED}✗${NC} Installation directory missing"
-    fi
-    
-    if [[ -f "$CONFIG_FILE" ]]; then
-        echo -e "${GREEN}✓${NC} Configuration file exists"
-    else
-        echo -e "${RED}✗${NC} Configuration file missing"
-    fi
-    
-    local command_count=$(find .claude/commands -name "*.md" 2>/dev/null | wc -l)
-    echo -e "${BLUE}Available Commands:${NC} $command_count"
-}
-
-# Main installation function
-main_install() {
-    log_info "Starting Claude Nine installation..."
-    
-    check_prerequisites
-    create_project_backup
-    load_config
-    
-    local current_version=$(get_current_version)
-    local remote_version=$(get_remote_version)
-    
-    if [[ "$current_version" != "not-installed" && "$current_version" == "$remote_version" ]]; then
-        log_info "Already up to date (version: $current_version)"
-        return 0
-    fi
-    
-    backup_installation
-    install_repo
-    create_command_structure
-    install_mcp_servers
-    
-    # Save version info
-    cd "$INSTALL_DIR"
-    local new_version=$(git rev-parse HEAD)
-    cd - >/dev/null
-    save_version "$new_version"
-    
-    show_usage_examples
-    
-    log_success "Claude Nine installation completed successfully!"
-}
-
-
-# Command line argument handling
-case "${1:-install}" in
-    "install" | "")
-        main_install
-        ;;
-    "--update" | "update")
-        log_info "Forcing update..."
-        main_install
-        ;;
-    "--config" | "config")
-        if command_exists nano; then
-            nano "$CONFIG_FILE"
-        elif command_exists vim; then
-            vim "$CONFIG_FILE"
-        else
-            log_info "Edit configuration file: $CONFIG_FILE"
+        echo -e "${GREEN}✓${NC} Claude Nine is installed"
+        
+        if [[ -f "$VERSION_FILE" ]]; then
+            local version=$(head -n1 "$VERSION_FILE")
+            local install_date=$(tail -n1 "$VERSION_FILE")
+            echo -e "  Version: ${CYAN}${version:0:8}${NC}"
+            echo -e "  Installed: ${CYAN}$install_date${NC}"
         fi
+        
+        local command_count=$(find "$HOME/.claude/commands" -name "*.md" 2>/dev/null | wc -l)
+        echo -e "  Commands: ${CYAN}$command_count${NC}"
+        
+        echo
+        echo -e "${BOLD}Available categories:${NC}"
+        for dir in "$HOME/.claude/commands"/*; do
+            if [[ -d "$dir" ]]; then
+                local category=$(basename "$dir")
+                local count=$(find "$dir" -name "*.md" | wc -l)
+                echo -e "  ${GREEN}$category${NC} ($count commands)"
+            fi
+        done
+    else
+        echo -e "${RED}✗${NC} Claude Nine is not installed"
+    fi
+    
+    press_enter
+}
+
+# Main program loop
+main() {
+    while true; do
+        show_banner
+        show_main_menu
+        
+        read -r choice
+        
+        case "$choice" in
+            1)
+                show_install_options
+                read -r install_choice
+                
+                case "$install_choice" in
+                    1) do_install "essential" ;;
+                    2) do_install "full" ;;
+                    3)
+                        show_categories
+                        read -r selection
+                        if [[ "$selection" == "A" || "$selection" == "a" ]]; then
+                            do_install "full"
+                        elif [[ "$selection" != "0" ]]; then
+                            do_install "custom" "$selection"
+                        fi
+                        ;;
+                    0) continue ;;
+                esac
+                ;;
+            2)
+                if [[ "$(get_installation_status)" == "installed" ]]; then
+                    do_update
+                fi
+                ;;
+            3)
+                if [[ "$(get_installation_status)" == "installed" ]]; then
+                    do_uninstall
+                fi
+                ;;
+            4)
+                if [[ "$(get_installation_status)" == "installed" ]]; then
+                    show_status
+                fi
+                ;;
+            0)
+                echo -e "\n${GREEN}Thanks for using Claude Nine! 🤖${NC}"
+                exit 0
+                ;;
+            *)
+                echo -e "\n${RED}Invalid choice. Please try again.${NC}"
+                sleep 1
+                ;;
+        esac
+    done
+}
+
+# Handle command line arguments
+case "${1:-}" in
+    "--install"|"install") 
+        check_prerequisites
+        do_install "full"
         ;;
-    "--status" | "status")
+    "--update"|"update")
+        do_update
+        ;;
+    "--uninstall"|"uninstall")
+        do_uninstall
+        ;;
+    "--status"|"status")
         show_status
         ;;
-    "--help" | "help")
-        echo "Claude Nine Installation Script"
+    "--help"|"help")
+        echo "Claude Nine Interactive Installer"
         echo
-        echo "Usage: $0 [command]"
+        echo "Usage: $0 [option]"
         echo
-        echo "Commands:"
-        echo "  install, (default)  Install or update Claude Nine (includes backup prompt)"
-        echo "  update, --update    Force update to latest version"
-        echo "  config, --config    Edit configuration file"
-        echo "  status, --status    Show installation status"
-        echo "  help, --help        Show this help message"
-        echo
-        echo "Features:"
-        echo "  • Automatic project backup creation before installation"
-        echo "  • Smart exclusion of build artifacts and dependencies"
-        echo "  • Clear guidance on backup placement and restoration"
+        echo "Options:"
+        echo "  (no args)     Interactive mode"
+        echo "  --install     Quick full install"
+        echo "  --update      Update to latest"
+        echo "  --uninstall   Remove installation"
+        echo "  --status      Show status"
+        echo "  --help        Show this help"
+        ;;
+    "")
+        main
         ;;
     *)
-        log_error "Unknown command: $1"
-        echo "Use '$0 --help' for usage information"
+        echo "Unknown option: $1"
+        echo "Use '$0 --help' for usage"
         exit 1
         ;;
 esac
