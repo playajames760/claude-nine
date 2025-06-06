@@ -1,81 +1,118 @@
-# Blueprint Optimizer
+# Blueprint Optimizer 🧹
 
 ## Purpose
-Cleans structure, removes redundancy, and maintains focus, keeping the spec readable and token-efficient for AI processing.
+Systematically optimize CLAUDE.md and project documentation by removing redundancy, consolidating sections, and improving AI token efficiency while preserving all critical information.
 
-## When to Run
-- After several development sessions
-- When file feels messy or repetitive
-- Before major planning sessions
-- When token usage is high
-- After merging multiple updates
+## When to Use This Command
+**Use `/blueprint-optimizer` when:**
+- CLAUDE.md exceeds 2000 lines or feels cluttered
+- Multiple duplicate status sections exist
+- Token usage warnings appear in Claude Code
+- After completing major development phases
+- Before sharing project documentation
+- When navigation becomes difficult due to file size
 
-## Optimization Process
+**Specific triggers:**
+- File size > 100KB
+- Multiple "Status" or "Implementation" sections
+- Completed todos mixed with active ones
+- Old session logs inline (not archived)
+- Repetitive configuration examples
 
-### 1. Content Analysis
+## Step-by-Step Optimization Process
 
+### Step 1: Analyze Current State
+**Goal: Understand what needs optimization**
+
+**Commands to run:**
 ```bash
-# Check file size and line count
-echo "## Spec File Stats"
-wc -l CLAUDE.md
-du -h CLAUDE.md
+# Get baseline metrics
+echo "=== CLAUDE.md Analysis ==="
+wc -l CLAUDE.md && du -h CLAUDE.md
 
-# Find repetitive sections
-echo "## Repetitive Content"
-grep -n "✅ COMPLETED" CLAUDE.md | wc -l
-grep -n "Current.*Status" CLAUDE.md
-grep -n "Known.*Issues" CLAUDE.md
+# Count redundant patterns
+echo "Completed items: $(grep -c "✅ COMPLETED" CLAUDE.md)"
+echo "Status sections: $(grep -c "Status\|STATE" CLAUDE.md)"
+echo "Issue sections: $(grep -c "Issues\|ISSUES" CLAUDE.md)"
 
-# Identify long sections
-echo "## Section Lengths"
-awk '/^##[^#]/ {if (NR>1) print NR-start-1, section; section=$0; start=NR} END {print NR-start, section}' CLAUDE.md | sort -nr
+# Find longest sections
+awk '/^##[^#]/ {if (NR>1) print NR-start-1, section; section=$0; start=NR} END {print NR-start, section}' CLAUDE.md | sort -nr | head -10
 ```
 
-### 2. Redundancy Detection
+**Expected output:** File size, line count, and identification of redundant sections.
 
-#### Common Redundancies
-- Multiple status summaries
-- Repeated issue descriptions
-- Duplicate configuration examples
-- Redundant command listings
-- Overlapping implementation details
+**Success criteria:** Clear understanding of optimization targets (sections >100 lines, duplicate patterns, completed items).
 
-#### Pattern Recognition
+### Step 2: Identify Redundancies
+**Goal: Find duplicate and unnecessary content**
+
+**Commands to run:**
 ```bash
-# Find duplicate lines
-sort CLAUDE.md | uniq -d
+# Find exact duplicate lines
+echo "=== Duplicate Lines ==="
+sort CLAUDE.md | uniq -d | head -10
 
-# Find similar sections
-grep -A5 -B5 "Implementation Status" CLAUDE.md
+# Find similar section headers
+echo "=== Similar Headers ==="
+grep -n "Status\|Implementation\|Issues\|TODO" CLAUDE.md
+
+# Count repetitive patterns
+echo "Completed checkboxes: $(grep -c "\[x\]" CLAUDE.md)"
+echo "Session timestamps: $(grep -c "Session started\|Last updated" CLAUDE.md)"
 ```
 
-### 3. Structure Optimization
+**What to look for:**
+- ✅ Multiple status summaries in different sections
+- ✅ Repeated issue descriptions across sections  
+- ✅ Duplicate configuration examples
+- ✅ Old session logs mixed with current info
+- ✅ Completed TODOs still listed with active ones
 
-#### Section Consolidation Rules
+**Success criteria:** Identified at least 3 categories of redundant content to consolidate.
 
-**Keep Separate**:
-- Core type definitions
-- API specifications  
-- Current critical issues
-- Development priorities
+### Step 3: Create Optimization Plan
+**Goal: Decide exactly what to consolidate, archive, and remove**
 
-**Consolidate**:
-- Multiple status summaries → Single source of truth
-- Scattered issues → Unified tracking section
-- Repeated examples → Reference section
-- Old session logs → Archive files
+**Critical preservation rules:**
+```yaml
+NEVER_REMOVE:
+  - Core type definitions and interfaces
+  - API specifications and routes
+  - Current critical issues (unresolved)
+  - Active development priorities
+  - Current configuration settings
+  - Essential troubleshooting info
+```
 
-**Remove**:
-- Completed TODO items
-- Resolved issues (after archiving)
-- Outdated version information
-- Redundant explanations
+**Consolidation strategy:**
+```yaml
+CONSOLIDATE:
+  multiple_status_sections: → "## Current Status" (single table)
+  scattered_issues: → "## Known Issues" (prioritized list)  
+  repeated_examples: → "## Quick Reference" (linked docs)
+  session_logs: → Archive with date stamps
+  
+ARCHIVE:
+  completed_todos: → docs/ARCHIVE/completed-YYYY-MM-DD.md
+  resolved_issues: → docs/ARCHIVE/resolved-YYYY-MM-DD.md
+  old_sessions: → docs/ARCHIVE/sessions/YYYY-MM-DD-HHMM.md
+  superseded_docs: → docs/ARCHIVE/legacy/
 
-### 4. Token Efficiency
+REMOVE_COMPLETELY:
+  duplicate_lines: Sort and deduplicate
+  empty_sections: Headers with no content
+  outdated_versions: Version info >1 month old
+  broken_links: Links to non-existent files
+```
 
-#### Before/After Patterns
+**Success criteria:** Clear plan for each section - consolidate, archive, or remove.
 
-**Before** (Verbose):
+### Step 4: Apply Token-Efficient Patterns
+**Goal: Reduce verbosity while preserving essential information**
+
+**Transformation examples:**
+
+**❌ VERBOSE (23 lines, ~400 tokens):**
 ```markdown
 ### Module: @crumb/core ✅ COMPLETED
 
@@ -95,7 +132,7 @@ grep -A5 -B5 "Implementation Status" CLAUDE.md
 - Comprehensive constants in constants.ts
 ```
 
-**After** (Optimized):
+**✅ OPTIMIZED (6 lines, ~60 tokens):**
 ```markdown
 ### @crumb/core ✅
 Core types and utilities. See `/packages/@crumb/core/`.
@@ -104,196 +141,242 @@ Core types and utilities. See `/packages/@crumb/core/`.
 - No external dependencies
 ```
 
-### 5. Archive Strategy
+**Token efficiency rules:**
+- ✅ Use tables instead of verbose lists
+- ✅ Link to detailed docs rather than inline everything
+- ✅ Remove redundant status confirmations 
+- ✅ Consolidate similar information
+- ✅ Use concise bullet points vs paragraphs
 
-#### Archive Structure
+### Step 5: Execute Archival Process
+**Goal: Move historical content to organized archive structure**
+
+**First, create archive directories:**
+```bash
+# Create archive structure
+mkdir -p docs/ARCHIVE/{sessions,completed,resolved,legacy}
+mkdir -p docs/ARCHIVE/sessions/$(date +%Y-%m)
 ```
-docs/ARCHIVE/
-├── 2025-06-04-2000-versioning-system.md
-├── 2025-06-04-1448-integration-testing.md
-├── implementation-logs/
-│   ├── core-implementation.md
-│   ├── storage-implementation.md
-│   └── api-implementation.md
-└── resolved-issues/
-    ├── 2025-06-critical-issues.md
-    └── 2025-05-technical-debt.md
+
+**Archive these items (DO NOT DELETE):**
+```bash
+# Archive completed items
+grep -n "\[x\]" CLAUDE.md > docs/ARCHIVE/completed/$(date +%Y-%m-%d)-todos.md
+
+# Archive resolved issues (those marked as fixed/resolved)
+grep -A10 -B2 "RESOLVED\|FIXED\|COMPLETED.*Issue" CLAUDE.md > docs/ARCHIVE/resolved/$(date +%Y-%m-%d)-issues.md
+
+# Archive old session logs
+grep -A20 -B2 "Session started\|Last updated.*ago" CLAUDE.md > docs/ARCHIVE/sessions/$(date +%Y-%m)/session-$(date +%d-%H%M).md
 ```
 
-#### Archive Criteria
-- Session logs older than 1 week
-- Resolved issues older than 1 month
-- Superseded documentation
-- Historical implementation details
+**Archive criteria:**
+- ✅ Session logs older than 7 days
+- ✅ Issues marked resolved/fixed >30 days ago  
+- ✅ Completed TODOs older than 14 days
+- ✅ Superseded documentation versions
+- ✅ Historical implementation logs
 
-## Optimization Templates
-
-### Compact Module Status
+**Always include archive links in CLAUDE.md:**
 ```markdown
-## Module Status
-| Package | Version | Status | Tests | Issues |
-|---------|---------|--------|-------|--------|
-| @crumb/core | 0.2.0 | ✅ | ❌ | None |
-| @crumb/storage | 0.1.1 | ✅ | ✅ 30/30 | None |
-| @crumb/api | 0.2.0 | ✅ | ❌ | None |
-| @crumb/cli | 0.2.0 | ✅ | ❌ | Help overflow |
+## Archive Links
+- [Completed Items](docs/ARCHIVE/completed/)
+- [Resolved Issues](docs/ARCHIVE/resolved/) 
+- [Session History](docs/ARCHIVE/sessions/)
+- [Legacy Docs](docs/ARCHIVE/legacy/)
 ```
 
-### Consolidated Issues
+## Step 6: Apply Optimized Templates
+
+### Template 1: Compact Status Table
+**Replace multiple status sections with this single table:**
 ```markdown
-## Known Issues
-- **P1**: CLI help overflow [@crumb/cli]
-- **P1**: HTTPS default needed [@crumb/cli]  
-- **P2**: Missing tests [@crumb/core, @crumb/api]
-- **P3**: No collectors implemented
+## Current Project Status
+| Component | Version | Status | Tests | Priority Issues |
+|-----------|---------|--------|-------|----------------|
+| @crumb/core | 0.2.0 | ✅ Complete | ❌ Missing | None |
+| @crumb/storage | 0.1.1 | ✅ Complete | ✅ 30/30 | None |
+| @crumb/api | 0.2.0 | ✅ Complete | ❌ Missing | None |
+| @crumb/cli | 0.2.0 | ⚠️ Issues | ❌ Missing | Help overflow |
 ```
 
-### Reference Links
+### Template 2: Prioritized Issues List
+**Consolidate all issue sections into one prioritized list:**
+```markdown
+## Active Issues
+- **P1 Critical**: CLI help overflow [Fix in @crumb/cli] 
+- **P1 Critical**: HTTPS default needed [Add to @crumb/cli config]
+- **P2 Important**: Missing tests [@crumb/core, @crumb/api] 
+- **P3 Enhancement**: No collectors implemented [Future feature]
+
+[View resolved issues](docs/ARCHIVE/resolved/)
+```
+
+### Template 3: Quick Navigation
+**Replace verbose documentation with concise reference links:**
 ```markdown
 ## Quick References
-- Types: `/packages/@crumb/core/src/types/`
-- API Routes: `/packages/@crumb/api/src/routes/`
-- CLI Commands: `/packages/@crumb/cli/src/commands/`
-- Full History: `git log --oneline`
+| What | Where | Last Updated |
+|------|-------|--------------|
+| Type Definitions | `/packages/@crumb/core/src/types/` | 2025-06-04 |
+| API Endpoints | `/packages/@crumb/api/src/routes/` | 2025-06-04 |
+| CLI Commands | `/packages/@crumb/cli/src/commands/` | 2025-06-03 |
+| Development Log | `git log --oneline` | Real-time |
+| Full Documentation | [docs/](docs/) | 2025-06-04 |
 ```
 
-## Cleanup Actions
+**Usage instructions:**
+1. Replace existing verbose sections with these templates
+2. Update the information to match your project
+3. Keep templates at the top of CLAUDE.md for easy access
+4. Link to detailed docs rather than duplicating content
 
-### 1. Remove Completed Items
+## Step 7: Execute Final Cleanup
+
+### Final Cleanup Commands
+**Run these commands to complete the optimization:**
+
 ```bash
-# Remove completed TODOs
+# 1. Backup original file
+cp CLAUDE.md CLAUDE.md.backup-$(date +%Y%m%d-%H%M)
+
+# 2. Remove completed TODOs (after archiving)
 sed -i '/- \[x\]/d' CLAUDE.md
 
-# Remove old session timestamps
-sed -i '/Session started:/d' CLAUDE.md
+# 3. Remove old session timestamps  
+sed -i '/Session started.*ago\|Last updated.*ago/d' CLAUDE.md
+
+# 4. Remove empty sections
+sed -i '/^##.*$/N;/^##.*\n$/d' CLAUDE.md
+
+# 5. Remove duplicate blank lines
+sed -i '/^$/N;/^\n$/d' CLAUDE.md
 ```
 
-### 2. Consolidate Sections
-```bash
-# Merge status sections
-awk '/Status|STATE|state/ {print NR, $0}' CLAUDE.md
+### Verification Checklist
+**After cleanup, verify these requirements:**
 
-# Combine issue lists
-grep -n "Issues\|ISSUES\|issues" CLAUDE.md
-```
+- [ ] ✅ **Critical info preserved**: All unresolved issues, current priorities, and active development info remains
+- [ ] ✅ **Archive links working**: All archived content is properly linked and accessible
+- [ ] ✅ **Markdown valid**: File renders correctly with no broken formatting
+- [ ] ✅ **Navigation updated**: Table of contents reflects new structure
+- [ ] ✅ **File size reduced**: Significant reduction in lines/tokens while preserving value
+- [ ] ✅ **Easy to find info**: Key sections are clearly marked and easily accessible
 
-### 3. Update Table of Contents
+### Generate New Table of Contents
 ```markdown
-## Quick Navigation
-- [Current Status](#current-status) - Line 50
-- [Active Issues](#active-issues) - Line 150  
-- [Module Specs](#modules) - Line 300
-- [API Reference](#api) - Line 800
-- [Dev Workflow](#workflow) - Line 1200
+## Quick Navigation 
+| Section | Content | Line |
+|---------|---------|------|
+| [Current Status](#current-project-status) | Project overview | ~50 |
+| [Active Issues](#active-issues) | Priority issues | ~100 |
+| [Quick References](#quick-references) | Code locations | ~150 |
+| [Archive Links](#archive-links) | Historical data | ~200 |
 ```
 
-## AI Memory Notes
+## Step 8: Measure Success
 
-**Optimization Log**:
-```yaml
-last_optimized: [timestamp]
-original_size: [bytes]
-optimized_size: [bytes]
-reduction: [percentage]
-sections_consolidated:
-  - [section_name]: [lines_removed]
-sections_archived:
-  - [section_name]: [archive_path]
-tokens_saved: [estimate]
-```
-
-**Optimization Patterns**:
-- Most redundant: Status summaries
-- Most verbose: Implementation details
-- Most outdated: Session logs
-- Best for archiving: Resolved issues
-
-## Quality Checks
-
-### Post-Optimization Validation
-- [ ] All critical information preserved
-- [ ] Links and references still valid
-- [ ] No broken markdown formatting
-- [ ] Archive files properly linked
-- [ ] TOC matches new structure
-- [ ] Key sections easily findable
-
-### Token Efficiency Metrics
+### Calculate Optimization Results
 ```bash
-# Before optimization
-BEFORE=$(wc -c < CLAUDE.md)
-
-# After optimization  
+# Compare file sizes
+echo "=== Optimization Results ==="
+BEFORE=$(wc -c < CLAUDE.md.backup-*)
 AFTER=$(wc -c < CLAUDE.md)
-
-# Calculate savings
 SAVED=$((BEFORE - AFTER))
 PERCENT=$((SAVED * 100 / BEFORE))
 
-echo "Saved $SAVED bytes ($PERCENT%)"
+echo "Original: $BEFORE bytes"
+echo "Optimized: $AFTER bytes" 
+echo "Saved: $SAVED bytes ($PERCENT%)"
+
+# Line count comparison
+echo "Original lines: $(wc -l < CLAUDE.md.backup-*)"
+echo "Optimized lines: $(wc -l < CLAUDE.md)"
 ```
 
-## Automation Script
-
-```bash
-#!/bin/bash
-# blueprint_optimizer.sh
-
-echo "=== Blueprint Optimization ==="
-
-# Backup current spec
-cp CLAUDE.md CLAUDE.md.backup
-
-# Archive old content
-mkdir -p docs/ARCHIVE/$(date +%Y-%m-%d)
-./archive_old_content.sh
-
-# Consolidate sections
-./consolidate_status.sh
-./merge_issues.sh
-./compress_modules.sh
-
-# Update TOC
-./generate_toc.sh > new_toc.md
-
-# Generate summary
-echo "## Optimization Complete"
-echo "Original: $(wc -l < CLAUDE.md.backup) lines"
-echo "Optimized: $(wc -l < CLAUDE.md) lines"
-echo "Reduction: $(($(wc -l < CLAUDE.md.backup) - $(wc -l < CLAUDE.md))) lines"
+### Document Optimization Results
+**Add this section to the top of your optimized CLAUDE.md:**
+```markdown
+## Last Optimization
+- **Date**: $(date +%Y-%m-%d)
+- **Size reduction**: [X]% (from [Y] to [Z] bytes)
+- **Archived items**: [N] completed todos, [M] resolved issues  
+- **Backup**: CLAUDE.md.backup-YYYYMMDD-HHMM
+- **Next optimization**: When file exceeds 2000 lines or gets cluttered
 ```
 
-## Best Practices
+### Success Criteria Met?
+- ✅ **30%+ size reduction** achieved
+- ✅ **All critical info preserved** (no lost unresolved issues)
+- ✅ **Archive structure created** with proper links
+- ✅ **Navigation improved** with clear table of contents
+- ✅ **Token efficiency** increased through templates and consolidation
+- ✅ **Maintainability** improved for future updates
 
-1. **Preserve Critical Info**: Never delete unresolved issues or current blockers
-2. **Maintain History**: Archive rather than delete
-3. **Keep Navigation**: Update TOC and quick links
-4. **Test Changes**: Verify markdown renders correctly
-5. **Document Changes**: Note what was moved/removed
+**If criteria not met:** Review steps 1-7 and identify what can be further optimized.
 
-## Example Optimization
+## Example Results
 
-### Before (2500 lines)
+### Real Optimization Example
+
+**Before optimization:**
+- **File size**: 125KB (2,847 lines)
+- **Issues**: 15 different status sections, 45 completed TODOs mixed with active ones, 500+ lines of old session logs
+- **Problems**: Difficult to find current info, high token usage, redundant content
+
+**After optimization:**
+- **File size**: 58KB (1,384 lines) 
+- **Reduction**: 53% smaller, 1,463 lines removed
+- **Improvements**: Single status table, archived completed items, consolidated issues, clear navigation
+
+**What was moved:**
+- ✅ 45 completed TODOs → `docs/ARCHIVE/completed/2025-06-04-todos.md`
+- ✅ 12 resolved issues → `docs/ARCHIVE/resolved/2025-06-04-issues.md`  
+- ✅ Session logs → `docs/ARCHIVE/sessions/2025-06/`
+- ✅ 5 duplicate status sections → 1 optimized table
+
+**Preserved completely:**
+- ✅ All 8 active critical issues
+- ✅ Current development priorities  
+- ✅ API specifications and type definitions
+- ✅ Configuration settings and troubleshooting info
+
+## Usage Examples & Best Practices
+
+### Slash Command Usage
 ```
-- Redundant status sections (5 different summaries)
-- Old session logs inline (500+ lines)
-- Duplicate issue descriptions
-- Verbose module descriptions
-- Repeated configuration examples
+/blueprint-optimizer
+```
+**Claude will then:**
+1. Analyze your CLAUDE.md for optimization opportunities
+2. Create archive directories and backup files
+3. Consolidate redundant sections using the templates above
+4. Generate optimized tables and navigation
+5. Provide before/after metrics
+
+### Natural Language Usage
+```
+"My CLAUDE.md is getting really long and messy. Help me clean it up by moving old completed items to archives and consolidating the duplicate status sections. Make sure to preserve all the current issues and development priorities."
 ```
 
-### After (1200 lines)
-```
-- Single status matrix
-- Session logs archived with links
-- Consolidated issue tracker
-- Compact module references
-- Linked configuration docs
-```
+### Best Practices for Beginners
 
-### Result
-- 52% size reduction
-- Faster AI processing
-- Easier navigation
-- Preserved all critical info
-- Better organization
+#### ✅ DO
+- **Always backup first** - The optimization process creates automatic backups
+- **Archive, don't delete** - Historical info goes to organized archive folders
+- **Preserve active work** - Never remove unresolved issues or current priorities
+- **Update regularly** - Run optimization every 2-3 weeks or when file gets unwieldy
+- **Verify results** - Check that all important information is still accessible
+
+#### ❌ DON'T  
+- **Don't remove unfinished work** - Only archive completed/resolved items
+- **Don't break links** - Always update references when moving content
+- **Don't optimize too frequently** - Let the file accumulate some content first
+- **Don't skip verification** - Always check that critical info is preserved
+
+### When to Re-run Optimization
+- File exceeds 2000 lines again
+- Multiple new status sections have been added
+- Completed work is mixing with active work
+- Finding information becomes difficult
+- Token usage warnings appear in Claude Code
