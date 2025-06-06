@@ -1,0 +1,5 @@
+commands/core/claude-nine-prompt.md
+commands/core/context-manager.md
+commands/development/feature-architect.md
+commands/maintenance/context-cleanup.md
+commands/essential/claude-nine-prompt-old.md
