@@ -53,6 +53,11 @@ check_prerequisites() {
         log_warning "Claude Code CLI not detected. Make sure it's installed and in PATH."
     fi
     
+    if ! command_exists npm; then
+        log_warning "npm not detected. MCP servers will be skipped."
+        INSTALL_MCP_SERVERS=false
+    fi
+    
     log_success "Prerequisites check completed"
 }
 
@@ -66,6 +71,14 @@ create_default_config() {
 AUTO_UPDATE=true
 BACKUP_ON_UPDATE=true
 PRESERVE_CUSTOM_COMMANDS=true
+
+# MCP Server Installation (zero-config, no API keys needed!)
+INSTALL_MCP_SERVERS=true
+INSTALL_FILESYSTEM_MCP=true
+INSTALL_GIT_MCP=true
+INSTALL_SQLITE_MCP=true
+INSTALL_DUCKDUCKGO_MCP=true
+INSTALL_MATH_MCP=true
 
 # Command categories to install (set to false to skip)
 INSTALL_GIT_ASSISTANT=true
@@ -214,6 +227,110 @@ create_command_structure() {
     done
 }
 
+# Install MCP Servers
+install_mcp_servers() {
+    if [[ "$INSTALL_MCP_SERVERS" != "true" ]]; then
+        log_info "MCP server installation disabled"
+        return 0
+    fi
+    
+    if ! command_exists npm; then
+        log_warning "npm not available - skipping MCP server installation"
+        return 0
+    fi
+    
+    log_info "Installing awesome zero-config MCP servers... 🚀"
+    
+    local mcp_config_file=".claude/mcp_servers.json"
+    mkdir -p "$(dirname "$mcp_config_file")"
+    
+    # Create MCP servers configuration
+    cat > "$mcp_config_file" << 'EOF'
+{
+  "mcpServers": {
+EOF
+    
+    local first_server=true
+    
+    # Filesystem MCP Server
+    if [[ "$INSTALL_FILESYSTEM_MCP" == "true" ]]; then
+        log_info "📁 Installing Filesystem MCP Server..."
+        if [[ "$first_server" != "true" ]]; then
+            echo "," >> "$mcp_config_file"
+        fi
+        cat >> "$mcp_config_file" << 'EOF'
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "."
+      ]
+    }
+EOF
+        first_server=false
+        log_success "📁 Filesystem MCP Server ready!"
+    fi
+    
+    # Git MCP Server
+    if [[ "$INSTALL_GIT_MCP" == "true" ]]; then
+        log_info "🔧 Installing Git MCP Server..."
+        if [[ "$first_server" != "true" ]]; then
+            echo "," >> "$mcp_config_file"
+        fi
+        cat >> "$mcp_config_file" << 'EOF'
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "--repository",
+        "."
+      ]
+    }
+EOF
+        first_server=false
+        log_success "🔧 Git MCP Server ready!"
+    fi
+    
+    # SQLite MCP Server
+    if [[ "$INSTALL_SQLITE_MCP" == "true" ]]; then
+        log_info "🗃️ Installing SQLite MCP Server..."
+        if [[ "$first_server" != "true" ]]; then
+            echo "," >> "$mcp_config_file"
+        fi
+        cat >> "$mcp_config_file" << 'EOF'
+    "sqlite": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "--db-path",
+        "./database.db"
+      ]
+    }
+EOF
+        first_server=false
+        log_success "🗃️ SQLite MCP Server ready!"
+    fi
+    
+    # Close the JSON configuration
+    cat >> "$mcp_config_file" << 'EOF'
+  }
+}
+EOF
+    
+    log_success "🎉 MCP servers configuration created at $mcp_config_file"
+    log_info "💡 To use these servers, add this config to your Claude Desktop app!"
+    echo
+    echo -e "${BLUE}Next steps:${NC}"
+    echo -e "  1. Open Claude Desktop app"
+    echo -e "  2. Go to Settings > Developer"  
+    echo -e "  3. Add the config from: ${GREEN}$mcp_config_file${NC}"
+    echo -e "  4. Restart Claude Desktop"
+    echo -e "  5. Enjoy your supercharged Claude Nine! 🚀"
+}
+
 # Extract individual commands from markdown files
 create_individual_commands() {
     local source_file="$1"
@@ -282,6 +399,10 @@ show_usage_examples() {
     echo -e "  ${GREEN}claude /project:test:write-tests${NC}     # Generate comprehensive tests"
     echo -e "  ${GREEN}claude /project:debug:analyze-error${NC}  # Debug analysis"
     echo
+    echo -e "${BLUE}🚀 MCP Superpowers (if installed):${NC}"
+    echo -e "  ${YELLOW}File operations, Git magic, Database queries${NC}"
+    echo -e "  ${YELLOW}Just ask Claude naturally - the tools work automatically!${NC}"
+    echo
     echo -e "${BLUE}Management commands:${NC}"
     echo -e "  ${GREEN}./install.sh --update${NC}               # Update to latest version"
     echo -e "  ${GREEN}./install.sh --config${NC}               # Edit configuration"
@@ -336,6 +457,7 @@ main_install() {
     backup_installation
     install_repo
     create_command_structure
+    install_mcp_servers
     
     # Save version info
     cd "$INSTALL_DIR"

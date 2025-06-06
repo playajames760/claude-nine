@@ -20,7 +20,7 @@ Imagine having a really smart friend who knows everything about coding and can h
 
 ## 🚀 Get Started (Super Easy!)
 
-### Option 1: Quick Setup (Copy & Paste) 
+### Quick Setup (Copy & Paste) 
 Just copy this into your terminal - it does everything for you!
 
 ```bash
@@ -32,6 +32,15 @@ curl -sSL https://raw.githubusercontent.com/playajames760/claude-nine/main/insta
 ```
 
 **That's it! You're ready to code! 🎉**
+
+**🤔 What just happened?**
+- ✅ Created a special folder where Claude finds your new superpowers
+- ✅ Downloaded all the helpful coding commands
+- ✅ Made backups so nothing gets lost
+- ✅ Set up easy updates for the future
+
+<details>
+<summary>📋 Other Installation Options (Click to expand)</summary>
 
 ### Option 2: Step-by-Step (If you want to see what's happening)
 ```bash
@@ -54,11 +63,7 @@ mkdir -p .claude/commands
 git clone https://github.com/playajames760/claude-nine.git .claude/commands/claude-nine
 ```
 
-**🤔 What just happened?**
-- ✅ Created a special folder where Claude finds your new superpowers
-- ✅ Downloaded all the helpful coding commands
-- ✅ Made backups so nothing gets lost
-- ✅ Set up easy updates for the future
+</details>
 
 ## 🎮 How to Use Your New Superpowers
 
