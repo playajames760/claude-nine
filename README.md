@@ -98,7 +98,7 @@ claude /project:debug:race-conditions     # Identify async issues
 - **Accuracy Synchronizer** - Keep documentation in sync
 - **Integration Analyzer** - Map connections between components
 - **Critical Path Tracker** - Identify blockers and priorities
-- **Blueprint Optimizer** - Clean up messy specifications
+- **Blueprint Optimizer** - Clean up messy CLAUDE.md files
 
 ## 🎨 Examples
 
@@ -181,7 +181,7 @@ claude "Execute emergency rollback - switch traffic to previous version and veri
 ├── accuracy_synchronizer.md   # Documentation sync (advanced)
 ├── integration_analyzer.md    # Component mapping (advanced)
 ├── critical_path_tracker.md   # Priority management (advanced)
-└── blueprint_optimizer.md     # Spec cleanup (advanced)
+└── blueprint_optimizer.md     # CLAUDE.md cleanup (advanced)
 ```
 
 ## ⚡ Pro Tips

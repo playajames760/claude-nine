@@ -348,6 +348,7 @@ main_install() {
     log_success "Claude Nine installation completed successfully!"
 }
 
+
 # Command line argument handling
 case "${1:-install}" in
     "install" | "")

@@ -17,18 +17,18 @@ Cleans structure, removes redundancy, and maintains focus, keeping the spec read
 ```bash
 # Check file size and line count
 echo "## Spec File Stats"
-wc -l SPEC.md
-du -h SPEC.md
+wc -l CLAUDE.md
+du -h CLAUDE.md
 
 # Find repetitive sections
 echo "## Repetitive Content"
-grep -n "✅ COMPLETED" SPEC.md | wc -l
-grep -n "Current.*Status" SPEC.md
-grep -n "Known.*Issues" SPEC.md
+grep -n "✅ COMPLETED" CLAUDE.md | wc -l
+grep -n "Current.*Status" CLAUDE.md
+grep -n "Known.*Issues" CLAUDE.md
 
 # Identify long sections
 echo "## Section Lengths"
-awk '/^##[^#]/ {if (NR>1) print NR-start-1, section; section=$0; start=NR} END {print NR-start, section}' SPEC.md | sort -nr
+awk '/^##[^#]/ {if (NR>1) print NR-start-1, section; section=$0; start=NR} END {print NR-start, section}' CLAUDE.md | sort -nr
 ```
 
 ### 2. Redundancy Detection
@@ -43,10 +43,10 @@ awk '/^##[^#]/ {if (NR>1) print NR-start-1, section; section=$0; start=NR} END {
 #### Pattern Recognition
 ```bash
 # Find duplicate lines
-sort SPEC.md | uniq -d
+sort CLAUDE.md | uniq -d
 
 # Find similar sections
-grep -A5 -B5 "Implementation Status" SPEC.md
+grep -A5 -B5 "Implementation Status" CLAUDE.md
 ```
 
 ### 3. Structure Optimization
@@ -162,19 +162,19 @@ docs/ARCHIVE/
 ### 1. Remove Completed Items
 ```bash
 # Remove completed TODOs
-sed -i '/- \[x\]/d' SPEC.md
+sed -i '/- \[x\]/d' CLAUDE.md
 
 # Remove old session timestamps
-sed -i '/Session started:/d' SPEC.md
+sed -i '/Session started:/d' CLAUDE.md
 ```
 
 ### 2. Consolidate Sections
 ```bash
 # Merge status sections
-awk '/Status|STATE|state/ {print NR, $0}' SPEC.md
+awk '/Status|STATE|state/ {print NR, $0}' CLAUDE.md
 
 # Combine issue lists
-grep -n "Issues\|ISSUES\|issues" SPEC.md
+grep -n "Issues\|ISSUES\|issues" CLAUDE.md
 ```
 
 ### 3. Update Table of Contents
@@ -221,10 +221,10 @@ tokens_saved: [estimate]
 ### Token Efficiency Metrics
 ```bash
 # Before optimization
-BEFORE=$(wc -c < SPEC.md)
+BEFORE=$(wc -c < CLAUDE.md)
 
 # After optimization  
-AFTER=$(wc -c < SPEC.md)
+AFTER=$(wc -c < CLAUDE.md)
 
 # Calculate savings
 SAVED=$((BEFORE - AFTER))
@@ -242,7 +242,7 @@ echo "Saved $SAVED bytes ($PERCENT%)"
 echo "=== Blueprint Optimization ==="
 
 # Backup current spec
-cp SPEC.md SPEC.md.backup
+cp CLAUDE.md CLAUDE.md.backup
 
 # Archive old content
 mkdir -p docs/ARCHIVE/$(date +%Y-%m-%d)
@@ -258,9 +258,9 @@ mkdir -p docs/ARCHIVE/$(date +%Y-%m-%d)
 
 # Generate summary
 echo "## Optimization Complete"
-echo "Original: $(wc -l < SPEC.md.backup) lines"
-echo "Optimized: $(wc -l < SPEC.md) lines"
-echo "Reduction: $(($(wc -l < SPEC.md.backup) - $(wc -l < SPEC.md))) lines"
+echo "Original: $(wc -l < CLAUDE.md.backup) lines"
+echo "Optimized: $(wc -l < CLAUDE.md) lines"
+echo "Reduction: $(($(wc -l < CLAUDE.md.backup) - $(wc -l < CLAUDE.md))) lines"
 ```
 
 ## Best Practices
