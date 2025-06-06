@@ -16,6 +16,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Logging functions
@@ -59,6 +60,78 @@ check_prerequisites() {
     fi
     
     log_success "Prerequisites check completed"
+}
+
+# Create project backup
+create_project_backup() {
+    echo
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${CYAN}                          PROJECT BACKUP RECOMMENDATION                          ${NC}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo
+    echo -e "${YELLOW}⚠️  IMPORTANT: Creating a backup of your project is highly recommended!${NC}"
+    echo
+    echo -e "This will help you restore your project if anything unexpected happens during"
+    echo -e "the installation process. The backup will be created in your project root."
+    echo
+    echo -e -n "${BLUE}Would you like to create a backup of your project? [Y/n]:${NC} "
+    read -r response
+    
+    # Default to yes if user just presses enter
+    response=${response:-Y}
+    
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        local project_name=$(basename "$(pwd)")
+        local backup_filename="claude-nine-backup-${project_name}-$(date +%Y%m%d-%H%M%S).tar.gz"
+        local backup_path="../$backup_filename"
+        
+        log_info "Creating project backup..."
+        echo -e "${BLUE}Backup will be saved as:${NC} ${GREEN}$backup_path${NC}"
+        echo
+        
+        # Exclude common directories that shouldn't be backed up
+        tar --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            --exclude='build' \
+            --exclude='.next' \
+            --exclude='coverage' \
+            --exclude='.cache' \
+            --exclude='*.log' \
+            --exclude='tmp' \
+            --exclude='temp' \
+            -czf "$backup_path" . 2>/dev/null
+        
+        if [[ $? -eq 0 ]]; then
+            local backup_size=$(du -h "$backup_path" | cut -f1)
+            log_success "Backup created successfully! (Size: $backup_size)"
+            echo
+            echo -e "${GREEN}✅ Backup saved to:${NC} $(realpath "$backup_path")"
+            echo
+            echo -e "${YELLOW}📌 IMPORTANT:${NC} Please move this backup file to a safe location outside"
+            echo -e "   your project directory. Suggested locations:"
+            echo -e "   • ${CYAN}~/backups/${NC}"
+            echo -e "   • ${CYAN}/backup/projects/${NC}"
+            echo -e "   • ${CYAN}External drive or cloud storage${NC}"
+            echo
+            echo -e "${BLUE}To restore from backup later, use:${NC}"
+            echo -e "   ${GREEN}tar -xzf $backup_filename${NC}"
+            echo
+        else
+            log_error "Failed to create backup. Would you like to continue anyway? [y/N]"
+            read -r continue_response
+            if [[ ! "$continue_response" =~ ^[Yy]$ ]]; then
+                log_info "Installation cancelled."
+                exit 1
+            fi
+        fi
+    else
+        log_warning "Skipping backup creation. Proceeding with installation..."
+        echo
+    fi
+    
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo
 }
 
 # Create default configuration
@@ -264,6 +337,13 @@ install_mcp_servers() {
     
     local mcp_config_file=".mcp.json"
     
+    # Check if .mcp.json already exists
+    if [[ -f "$mcp_config_file" ]]; then
+        log_warning ".mcp.json already exists. Creating backup..."
+        cp "$mcp_config_file" "${mcp_config_file}.backup.$(date +%Y%m%d_%H%M%S)"
+        log_info "Existing configuration backed up"
+    fi
+    
     # Create MCP servers configuration
     cat > "$mcp_config_file" << 'EOF'
 {
@@ -467,6 +547,7 @@ main_install() {
     log_info "Starting Claude Nine installation..."
     
     check_prerequisites
+    create_project_backup
     load_config
     
     local current_version=$(get_current_version)
@@ -521,11 +602,16 @@ case "${1:-install}" in
         echo "Usage: $0 [command]"
         echo
         echo "Commands:"
-        echo "  install, (default)  Install or update Claude Nine"
+        echo "  install, (default)  Install or update Claude Nine (includes backup prompt)"
         echo "  update, --update    Force update to latest version"
         echo "  config, --config    Edit configuration file"
         echo "  status, --status    Show installation status"
         echo "  help, --help        Show this help message"
+        echo
+        echo "Features:"
+        echo "  • Automatic project backup creation before installation"
+        echo "  • Smart exclusion of build artifacts and dependencies"
+        echo "  • Clear guidance on backup placement and restoration"
         ;;
     *)
         log_error "Unknown command: $1"
